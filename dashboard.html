@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>WebCraft | داشبورد</title>
+  <title>BlockWeb | داشبورد</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <script src="https://developer.eitaa.com/eitaa-web-app.js"></script>
   <style>
@@ -237,7 +237,7 @@
       <div class="header-right">
         <div class="header-logo"><i class="fa-solid fa-cubes"></i></div>
         <div>
-          <div class="header-title">WebCraft</div>
+          <div class="header-title">BlockWeb</div>
           <div class="header-subtitle">سایت بسازید، بدون کدنویسی</div>
         </div>
       </div>
@@ -252,11 +252,11 @@
 
   <section class="main-container">
 
-    <a href="pay.html" class="premium-banner">
+    <a href="pay.html" class="premium-banner" id="premiumBanner">
       <div class="premium-icon"><i class="fa-solid fa-crown"></i></div>
       <div class="premium-info">
         <h3>ارتقا به پرومیوم</h3>
-        <p>با خرید اشتراک پرومیوم، به تمام قابلیت‌های ویژه WebCraft دسترسی پیدا کنید</p>
+        <p>با خرید اشتراک پرومیوم، به تمام قابلیت‌های ویژه BlockWeb دسترسی پیدا کنید</p>
         <div class="premium-tags">
           <span class="premium-tag"><i class="fa-solid fa-check"></i> رنگ‌های دلخواه</span>
           <span class="premium-tag"><i class="fa-solid fa-check"></i> انیمیشن‌ها</span>
@@ -289,7 +289,7 @@
       <a href="ads.html"><i class="fa-solid fa-ad"></i> رزرو تبلیغات</a>
       <a href="support.html"><i class="fa-solid fa-headset"></i> پشتیبانی</a>
     </div>
-    <p class="footer-text">WebCraft — کلیه حقوق محفوظ است</p>
+    <p class="footer-text">BlockWeb — کلیه حقوق محفوظ است</p>
   </footer>
 
   <div class="floating-buttons">
@@ -302,7 +302,7 @@
   </div>
 
   <script>
-    const API_URL = 'https://script.google.com/macros/s/AKfycbzhx-rXcEZb-Q0D7ekTcuGfH5OujNRPpb4LRcQ49U4q4jAPjQRI6JrNxcQDNPzwM4mG/exec';
+    const API_URL = 'https://script.google.com/macros/s/AKfycby1I5tG6oh2p5pPQQUqoLxVYTtdrOrTj_qzOf1L4gMcJO3n1BtK5szNJihmXmqJZQY/exec';
     const SESSION_DURATION = 3 * 60 * 60 * 1000;
 
     class WebCraftApp {
@@ -313,17 +313,17 @@
     }
 
     function checkSession() {
-      const sessionData = localStorage.getItem('webcraft_session');
+      const sessionData = localStorage.getItem('blockweb_session');
       if (!sessionData) return null;
       try {
         const session = JSON.parse(sessionData);
         if (Date.now() - session.timestamp > SESSION_DURATION) {
-          localStorage.removeItem('webcraft_session');
+          localStorage.removeItem('blockweb_session');
           return null;
         }
         return session.user;
       } catch (e) {
-        localStorage.removeItem('webcraft_session');
+        localStorage.removeItem('blockweb_session');
         return null;
       }
     }
@@ -403,6 +403,9 @@
       const avatarIcon = user.avatar || 'fa-user';
       document.getElementById('headerAvatar').innerHTML = `<i class="fa-solid ${avatarIcon}"></i>`;
       document.getElementById('headerName').textContent = user.fullName || user.username || 'کاربر';
+
+      const isNormalUser = user.userType === 'normal';
+      document.getElementById('premiumBanner').style.display = isNormalUser ? 'flex' : 'none';
 
       document.getElementById('mainGrid').innerHTML = adCard + customOrderCard + aiCard + portfolioCard;
 
