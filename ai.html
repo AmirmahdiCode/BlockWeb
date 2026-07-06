@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>WebCraft | هوش مصنوعی</title>
+  <title>BlockWeb | هوش مصنوعی</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <script src="https://developer.eitaa.com/eitaa-web-app.js"></script>
   <style>
@@ -166,7 +166,7 @@
       <div class="header-right">
         <div class="header-logo"><i class="fa-solid fa-cubes"></i></div>
         <div>
-          <div class="header-title">WebCraft</div>
+          <div class="header-title">BlockWeb</div>
           <div class="header-subtitle">سایت بسازید، بدون کدنویسی</div>
         </div>
       </div>
@@ -214,7 +214,7 @@
           <h3>ایده پردازی</h3>
         </div>
         <div class="ai-card-body">
-          <textarea id="ideaInput" placeholder="درباره کسب‌وکار، پروژه یا هر موضوعی که می‌خواهید توضیح دهید تا ایده‌های خلاقانه به شما بدم..."></textarea>
+          <textarea id="ideaInput" placeholder="درباره کسب‌وکار، پروژه یا هر موضوعی که می‌خواهید توضیح دهید..."></textarea>
           <button class="btn-submit" onclick="processAI('idea')">
             <i class="fa-solid fa-wand-magic-sparkles"></i> دریافت ایده
           </button>
@@ -256,17 +256,17 @@
       <a href="ads.html"><i class="fa-solid fa-ad"></i> رزرو تبلیغات</a>
       <a href="support.html"><i class="fa-solid fa-headset"></i> پشتیبانی</a>
     </div>
-    <p class="footer-text">WebCraft — کلیه حقوق محفوظ است</p>
+    <p class="footer-text">BlockWeb — کلیه حقوق محفوظ است</p>
   </footer>
 
   <script>
-    const AI_API = 'https://script.google.com/macros/s/AKfycbw6Znap149QC0woxcrERfulj_s2TMLoERIAF3aiV6oagmhHq83rGpa_GOq7pDdKJLz4/exec';
+    const POLLINATIONS_API = 'https://text.pollinations.ai/';
     const SESSION_DURATION = 3 * 60 * 60 * 1000;
 
     let currentMode = 'debug';
     let isProcessing = false;
 
-    class WebCraftApp {
+    class BlockWebApp {
       constructor() {
         this.webApp = window.Eitaa && window.Eitaa.WebApp ? window.Eitaa.WebApp : null;
         if (this.webApp) { this.webApp.ready(); this.webApp.expand(); }
@@ -274,24 +274,19 @@
     }
 
     function checkSession() {
-      const sessionData = localStorage.getItem('webcraft_session');
+      const sessionData = localStorage.getItem('blockweb_session');
       if (!sessionData) return null;
       try {
         const session = JSON.parse(sessionData);
         if (Date.now() - session.timestamp > SESSION_DURATION) {
-          localStorage.removeItem('webcraft_session');
+          localStorage.removeItem('blockweb_session');
           return null;
         }
         return session.user;
       } catch (e) {
-        localStorage.removeItem('webcraft_session');
+        localStorage.removeItem('blockweb_session');
         return null;
       }
-    }
-
-    function getCurrentUser() {
-      const user = checkSession();
-      return user || { userId: 'guest', username: 'مهمان', fullName: 'کاربر مهمان' };
     }
 
     function switchTab(mode) {
@@ -326,6 +321,19 @@
       card.scrollIntoView({ behavior: 'smooth' });
     }
 
+    function getPromptForMode(mode, input) {
+      switch (mode) {
+        case 'debug':
+          return 'تو یک برنامه‌نویس ارشد و متخصص رفع باگ هستی. کد زیر رو تحلیل کن، مشکلش رو پیدا کن، توضیح بده و کد اصلاح شده رو بنویس. پاسخ رو به فارسی بده.\n\nکد:\n' + input;
+        case 'idea':
+          return 'تو یک مشاور خلاق و ایده‌پرداز حرفه‌ای هستی. برای موضوع زیر ۳ تا ۵ ایده خلاقانه و عملی ارائه بده. هر ایده رو در ۲-۳ خط توضیح بده و شماره‌گذاری کن. پاسخ رو به فارسی بده.\n\nموضوع:\n' + input;
+        case 'code':
+          return 'تو یک برنامه‌نویس حرفه‌ای هستی. بر اساس توضیحات زیر، کد HTML/CSS/JavaScript تمیز و کامل بنویس. کد رو داخل بلاک کد قرار بده و توضیح کوتاه فارسی بنویس.\n\nدرخواست:\n' + input;
+        default:
+          return input;
+      }
+    }
+
     async function processAI(mode) {
       if (isProcessing) return;
       
@@ -349,23 +357,19 @@
       buttons.forEach(btn => btn.disabled = true);
       
       try {
-        const user = getCurrentUser();
-        const res = await fetch(AI_API, {
-          method: 'POST',
-          body: JSON.stringify({
-            action: 'processAI',
-            userId: user.userId,
-            userName: user.fullName || user.username,
-            mode: mode,
-            input: input
-          })
-        });
-        const data = await res.json();
+        const prompt = getPromptForMode(mode, input);
         
-        if (data.success) {
-          showResult(data.output);
+        const res = await fetch(POLLINATIONS_API, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ messages: [{ role: 'user', content: prompt }] })
+        });
+        const text = await res.text();
+        
+        if (text && text.trim()) {
+          showResult(text);
         } else {
-          showResult('متاسفانه خطایی رخ داد. لطفاً دوباره تلاش کنید.');
+          showResult('متاسفانه سیستم در حال حاضر در دسترس نیست. لطفاً بعداً تلاش کنید.');
         }
       } catch (e) {
         showResult('خطا در ارتباط با سرور. لطفاً بعداً تلاش کنید.');
@@ -376,7 +380,13 @@
     }
 
     (function init() {
-      new WebCraftApp();
+      const user = checkSession();
+      if (!user) {
+        window.location.href = 'login.html';
+        return;
+      }
+      
+      new BlockWebApp();
     })();
   </script>
 
