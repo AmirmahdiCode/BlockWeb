@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>WebCraft | پلن‌های اشتراک</title>
+  <title>WebCraft | بسته‌های اشتراک</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <script src="https://developer.eitaa.com/eitaa-web-app.js"></script>
   <style>
@@ -13,7 +13,7 @@
       --primary: #6366f1; --primary-dark: #4f46e5; --primary-light: #818cf8;
       --dark: #0f172a; --text: #334155; --text-light: #94a3b8;
       --white: #ffffff; --red: #f43f5e; --green: #10b981;
-      --orange: #f59e0b; --purple: #a855f7; --gold: #fbbf24;
+      --orange: #f59e0b; --purple: #a855f7;
     }
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -75,25 +75,16 @@
     .plan-card.featured .plan-header {
       background: linear-gradient(135deg, #eef2ff, #ddd6fe);
     }
-    .plan-card.golden {
-      border-color: var(--gold);
-      box-shadow: 0 4px 24px rgba(251,191,36,0.12);
-    }
-    .plan-card.golden .plan-header {
-      background: linear-gradient(135deg, #fffbeb, #fef3c7);
-    }
 
     .plan-header {
       padding: 24px 20px 16px; text-align: center;
       background: linear-gradient(135deg, #eef2ff, #e0e7ff);
     }
     .plan-header i { font-size: 32px; color: var(--primary); margin-bottom: 8px; }
-    .plan-card.golden .plan-header i { color: var(--gold); }
     .plan-header h3 { font-size: 17px; font-weight: 700; color: var(--dark); }
     .plan-header .plan-price {
       font-size: 28px; font-weight: 700; color: var(--primary); margin-top: 8px;
     }
-    .plan-card.golden .plan-header .plan-price { color: #b45309; }
     .plan-header .plan-price span { font-size: 13px; font-weight: 400; color: var(--text-light); }
 
     .plan-body { padding: 16px 20px; flex: 1; }
@@ -105,9 +96,7 @@
     .plan-features li:last-child { border-bottom: none; }
     .plan-features li i { width: 16px; text-align: center; }
     .plan-features li i.fa-check { color: var(--green); }
-    .plan-features li i.fa-xmark { color: var(--text-light); }
     .plan-features li i.fa-infinity { color: var(--purple); }
-    .plan-features li i.fa-star { color: var(--gold); }
 
     .plan-footer { padding: 16px 20px; border-top: 1px solid var(--bg3); }
     .btn-select {
@@ -119,18 +108,13 @@
       color: #fff; border: none;
     }
     .btn-select:hover { box-shadow: 0 4px 16px rgba(99,102,241,0.3); }
-    .btn-select.gold {
-      background: linear-gradient(135deg, var(--gold), #f59e0b);
-      color: #0f172a;
-    }
-    .btn-select.gold:hover { box-shadow: 0 4px 16px rgba(251,191,36,0.4); }
-    .btn-unavailable {
+    .btn-default {
       width: 100%; padding: 12px; border-radius: 10px;
-      font-size: 14px; font-weight: 600; cursor: not-allowed;
+      font-size: 14px; font-weight: 600;
       font-family: inherit;
       display: flex; align-items: center; justify-content: center; gap: 8px;
       background: var(--bg2); color: var(--text-light); border: 1px solid var(--bg3);
-      opacity: 0.7;
+      cursor: default;
     }
 
     .footer {
@@ -146,11 +130,6 @@
     }
     .footer-links a:hover { color: var(--dark); }
     .footer-text { font-size: 10px; color: var(--text-light); }
-
-    .premium-section {
-      margin-top: 32px; padding-top: 24px; border-top: 2px dashed var(--bg3);
-    }
-    .premium-section .section-title { font-size: 17px; }
 
     @media (max-width: 600px) {
       .plans-grid { grid-template-columns: 1fr; }
@@ -182,40 +161,6 @@
       <div style="text-align:center;padding:40px;grid-column:1/-1;color:var(--text-light);">
         <i class="fa-solid fa-circle-notch fa-spin" style="font-size:32px;"></i>
         <p style="margin-top:12px;">در حال بارگذاری...</p>
-      </div>
-    </div>
-
-    <div class="premium-section">
-      <h2 class="section-title">پرومیوم</h2>
-      <p class="section-subtitle">اشتراک ویژه برای دسترسی به قابلیت‌های حرفه‌ای WebCraft</p>
-
-      <div class="plans-grid" id="premiumGrid">
-        <div class="plan-card golden featured">
-          <div class="plan-header">
-            <i class="fa-solid fa-crown"></i>
-            <h3>پرومیوم</h3>
-            <div class="plan-price">۴۹,۰۰۰ <span>تومان</span></div>
-          </div>
-          <div class="plan-body">
-            <ul class="plan-features">
-              <li><i class="fa-solid fa-star"></i> پالت رنگ نامحدود</li>
-              <li><i class="fa-solid fa-star"></i> بک‌گراند گرادیانت و تصویر</li>
-              <li><i class="fa-solid fa-star"></i> انیمیشن‌های AOS و پارالاکس</li>
-              <li><i class="fa-solid fa-star"></i> ذرات شناور و تایپ رایتر</li>
-              <li><i class="fa-solid fa-star"></i> سایه‌ها و نوار اسکرول</li>
-              <li><i class="fa-solid fa-star"></i> حالت شب/روز خودکار</li>
-              <li><i class="fa-solid fa-star"></i> پیش‌نمایش زنده سایت</li>
-              <li><i class="fa-solid fa-star"></i> صوت‌های بی‌نهایت</li>
-              <li><i class="fa-solid fa-star"></i> پشتیبانی آنلاین با AI</li>
-              <li><i class="fa-solid fa-star"></i> ذخیره‌سازی گوگل شیت</li>
-            </ul>
-          </div>
-          <div class="plan-footer">
-            <button class="btn-select gold" onclick="selectPremium()">
-              <i class="fa-solid fa-crown"></i> خرید پرومیوم
-            </button>
-          </div>
-        </div>
       </div>
     </div>
 
@@ -267,16 +212,6 @@
       window.location.href = 'pay.html';
     }
 
-    function selectPremium() {
-      localStorage.setItem('wc_selected_plan', JSON.stringify({
-        type: 'premium',
-        planId: 'plan_premium',
-        planName: 'پرومیوم',
-        price: 49000
-      }));
-      window.location.href = 'pay.html';
-    }
-
     async function loadPlans() {
       const grid = document.getElementById('plansGrid');
       
@@ -287,15 +222,16 @@
         });
         const plans = await res.json();
         
-        if (!plans || plans.length === 0) {
+        const availablePlans = plans.filter(plan => plan.status !== 'unavailable');
+        
+        if (!availablePlans || availablePlans.length === 0) {
           grid.innerHTML = '<div style="text-align:center;padding:40px;grid-column:1/-1;color:var(--text-light);"><i class="fa-solid fa-box-open" style="font-size:40px;"></i><p>هنوز بسته‌ای ثبت نشده</p></div>';
           return;
         }
 
-        grid.innerHTML = plans.map(plan => {
+        grid.innerHTML = availablePlans.map(plan => {
           const isFree = plan.price <= 0;
           const maxProjects = plan.maxProjects >= 999 ? 'بی‌نهایت' : plan.maxProjects;
-          const isAvailable = plan.price > 0;
           
           return `
             <div class="plan-card ${plan.planId === 'plan_gold' ? 'featured' : ''}">
@@ -314,18 +250,16 @@
                   <li><i class="fa-solid fa-check"></i> تنظیمات ظاهری پایه</li>
                   <li><i class="fa-solid fa-check"></i> ۳ رنگ + ۳ صوت</li>
                   <li><i class="fa-solid ${maxProjects === 'بی‌نهایت' ? 'fa-infinity' : 'fa-check'}"></i> سقف پروژه: ${maxProjects}</li>
-                  <li><i class="fa-solid ${plan.planId === 'plan_free' ? 'fa-xmark' : 'fa-check'}"></i> دانلود کد خروجی</li>
+                  <li><i class="fa-solid fa-check"></i> دانلود کد خروجی</li>
                 </ul>
               </div>
               <div class="plan-footer">
-                ${isAvailable ? `
+                ${isFree ? `
+                  <div class="btn-default"><i class="fa-solid fa-check"></i> بسته پیش‌فرض</div>
+                ` : `
                   <button class="btn-select" onclick="selectPlan('${plan.planId}', '${plan.planName}', ${plan.price}, ${plan.maxProjects})">
                     <i class="fa-solid fa-cart-shopping"></i> خرید این بسته
                   </button>
-                ` : `
-                  <div class="btn-unavailable">
-                    <i class="fa-solid fa-check"></i> بسته پیش‌فرض
-                  </div>
                 `}
               </div>
             </div>
