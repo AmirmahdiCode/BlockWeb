@@ -44,9 +44,9 @@
       font-size: 13px; font-weight: 600; text-decoration: none;
       padding: 8px 14px; border-radius: 10px;
       transition: all 0.3s ease; white-space: nowrap;
-      font-family: inherit; cursor: pointer; background: none;
+      font-family: inherit; cursor: pointer;
     }
-    .btn-back { color: var(--primary-dark); border: 1.5px solid var(--primary-light); }
+    .btn-back { color: var(--primary-dark); border: 1.5px solid var(--primary-light); background: none; }
     .btn-back:hover { background: #eef2ff; }
 
     .main-container { flex: 1; max-width: 750px; width: 100%; margin: 20px auto; padding: 0 16px; display: flex; flex-direction: column; }
@@ -190,15 +190,15 @@
       </div>
       <div class="chat-messages" id="chatMessages">
         <div class="message support">
-          سلام! من دستیار پشتیبانی WebCraft هستم.<br>
-          چطور می‌تونم کمکت کنم؟ می‌تونی درباره ساخت سایت، کامپوننت‌ها، اشتراک و هر چیزی مربوط به WebCraft ازم بپرسی.
+          سلام! من دستیار WebCraft هستم.<br>
+          درباره ساخت سایت، تنظیمات، اشتراک و هر چیزی مربوط به WebCraft می‌تونی ازم بپرسی.
         </div>
       </div>
       <div class="topics-hint">
         <button class="topic-chip" onclick="sendTopic('چطور یه سایت جدید بسازم؟')">ساخت سایت جدید</button>
-        <button class="topic-chip" onclick="sendTopic('چه پلن‌هایی دارید؟')">پلن‌های اشتراک</button>
-        <button class="topic-chip" onclick="sendTopic('چطور از قالب‌ها استفاده کنم؟')">قالب‌ها</button>
-        <button class="topic-chip" onclick="sendTopic('سایتم رو چطور منتشر کنم؟')">انتشار سایت</button>
+        <button class="topic-chip" onclick="sendTopic('پرومیوم چه قابلیت‌هایی داره؟')">پرومیوم</button>
+        <button class="topic-chip" onclick="sendTopic('چطور پلن خریداری کنم؟')">خرید پلن</button>
+        <button class="topic-chip" onclick="sendTopic('سایتم رو چطور دانلود کنم؟')">دانلود سایت</button>
       </div>
       <div class="chat-input-area">
         <input type="text" id="chatInput" placeholder="سوال خود را بنویسید..." onkeypress="handleKey(event)">
@@ -218,37 +218,35 @@
   </footer>
 
   <script>
-    const SUPPORT_API = 'https://script.google.com/macros/s/AKfycbwthsD1CPCZUiDVqslls2jL17h_xx2De46MXfrKC8-W4Iy_EAWWzmOHAuF_8K2d8WZx/exec';
+    const POLLINATIONS_API = 'https://text.pollinations.ai/';
     const SESSION_DURATION = 3 * 60 * 60 * 1000;
 
     let isWaiting = false;
+    let chatHistory = [];
+
+    const SYSTEM_PROMPT = `تو دستیار پشتیبانی WebCraft هستی. WebCraft یه سایت‌ساز بدون کدنویسیه.
+
+موضوعاتی که می‌تونی کمک کنی:
+- نحوه ساخت سایت با WebCraft
+- راهنمایی درباره تنظیمات ظاهری (رنگ، فونت، هدر، فوتر)
+- مشکلات فنی در طراحی سایت
+- راهنمایی درباره اشتراک‌ها و پلن‌ها
+- پرومیوم و قابلیت‌های ویژه
+- سوالات درباره خروجی و دانلود سایت
+- کمک به بهینه‌سازی طراحی
+
+موضوعاتی که نباید پاسخ بدی:
+- سوالات سیاسی، مذهبی، جنسی، خشونت‌آمیز
+- سوالات شخصی خارج از WebCraft
+- کدنویسی خارج از حوزه WebCraft
+
+همیشه پاسخ‌هات کوتاه، مفید، دوستانه و به زبان فارسی باشه.`;
 
     class WebCraftApp {
       constructor() {
         this.webApp = window.Eitaa && window.Eitaa.WebApp ? window.Eitaa.WebApp : null;
         if (this.webApp) { this.webApp.ready(); this.webApp.expand(); }
       }
-    }
-
-    function checkSession() {
-      const sessionData = localStorage.getItem('webcraft_session');
-      if (!sessionData) return null;
-      try {
-        const session = JSON.parse(sessionData);
-        if (Date.now() - session.timestamp > SESSION_DURATION) {
-          localStorage.removeItem('webcraft_session');
-          return null;
-        }
-        return session.user;
-      } catch (e) {
-        localStorage.removeItem('webcraft_session');
-        return null;
-      }
-    }
-
-    function getCurrentUser() {
-      const user = checkSession();
-      return user || { userId: 'guest', username: 'مهمان', fullName: 'کاربر مهمان' };
     }
 
     function addMessage(text, type) {
@@ -276,6 +274,45 @@
       if (indicator) indicator.remove();
     }
 
+    async function askAI(question) {
+      const history = chatHistory.slice(-6).map(h => h.role + ': ' + h.content).join('\n');
+      const fullPrompt = SYSTEM_PROMPT + '\n\n' + (history || '') + '\nکاربر: ' + question + '\nپشتیبان:';
+
+      try {
+        const res = await fetch(POLLINATIONS_API, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            messages: [{ role: 'user', content: fullPrompt }]
+          })
+        });
+        const text = await res.text();
+        return text && text.trim() ? text : getFallbackResponse(question);
+      } catch (e) {
+        return getFallbackResponse(question);
+      }
+    }
+
+    function getFallbackResponse(question) {
+      const q = question.toLowerCase();
+      if (q.includes('سایت') || q.includes('پروژه') || q.includes('ساختن')) {
+        return 'برای ساخت سایت جدید، از داشبورد روی "ساخت سایت اختصاصی" کلیک کنید. یه دامنه انتخاب کنید و مراحل ویزارد رو طی کنید.';
+      }
+      if (q.includes('پرومیوم') || q.includes('پروم') || q.includes('vip')) {
+        return 'پرومیوم قابلیت‌های ویژه مثل رنگ‌های نامحدود، انیمیشن، پیش‌نمایش زنده، صوت بی‌نهایت و پشتیبانی آنلاین داره. برای خرید از داشبورد روی کارت طلایی کلیک کنید.';
+      }
+      if (q.includes('پلن') || q.includes('اشتراک') || q.includes('خرید')) {
+        return 'ما بسته‌های مختلف داریم: رایگان (۱ پروژه)، نقره‌ای (۳ پروژه)، طلایی (۱۰ پروژه). برای خرید به صفحه پلن‌ها برید.';
+      }
+      if (q.includes('دانلود') || q.includes('خروجی') || q.includes('کد')) {
+        return 'بعد از اتمام طراحی، از بخش Blockly می‌تونید کد HTML/CSS/JS سایت خودتون رو دانلود کنید.';
+      }
+      if (q.includes('رنگ') || q.includes('فونت')) {
+        return 'توی بخش تنظیمات ظاهری می‌تونید رنگ هدر، بادی، فوتر و ۳ رنگ اصلی رو انتخاب کنید. فونت‌های وزیر، یکان، ایران‌سنس و... در دسترس هستن.';
+      }
+      return 'متشکرم از پیام شما. من دستیار WebCraft هستم و می‌تونم در زمینه ساخت سایت، تنظیمات، اشتراک و پرومیوم کمکت کنم.';
+    }
+
     async function sendMessage() {
       if (isWaiting) return;
 
@@ -283,10 +320,8 @@
       const message = input.value.trim();
       if (!message) return;
 
-      const user = getCurrentUser();
-      const userName = user.fullName || user.username || 'کاربر';
-
       addMessage(message, 'user');
+      chatHistory.push({ role: 'user', content: message });
       input.value = '';
       input.focus();
 
@@ -294,29 +329,10 @@
       document.getElementById('btnSend').disabled = true;
       addTypingIndicator();
 
-      try {
-        const res = await fetch(SUPPORT_API, {
-          method: 'POST',
-          body: JSON.stringify({
-            action: 'sendMessage',
-            userId: user.userId || 'guest',
-            userName: userName,
-            message: message
-          })
-        });
-        const data = await res.json();
-
-        removeTypingIndicator();
-
-        if (data.success) {
-          addMessage(data.reply, 'support');
-        } else {
-          addMessage('متاسفانه خطایی رخ داد. دوباره تلاش کنید.', 'support');
-        }
-      } catch (e) {
-        removeTypingIndicator();
-        addMessage('خطا در ارتباط با سرور. لطفاً بعداً تلاش کنید.', 'support');
-      }
+      const reply = await askAI(message);
+      removeTypingIndicator();
+      addMessage(reply, 'support');
+      chatHistory.push({ role: 'assistant', content: reply });
 
       isWaiting = false;
       document.getElementById('btnSend').disabled = false;
