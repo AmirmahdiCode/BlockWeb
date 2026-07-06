@@ -44,8 +44,6 @@
       color: var(--text); border: 1.5px solid var(--bg3);
     }
     .header-btn:hover { background: var(--bg2); }
-    .btn-save { background: var(--green); color: #fff; border: none; }
-    .btn-save:hover { background: #059669; }
 
     .loading-container {
       display: flex; align-items: center; justify-content: center;
@@ -143,6 +141,9 @@
       font-size: 10px; color: var(--orange); background: #fef3c7;
       padding: 3px 8px; border-radius: 8px; margin-right: 6px;
     }
+    .lock-badge.unlocked {
+      color: var(--green); background: #ecfdf5;
+    }
 
     .wizard-footer {
       padding: 16px 24px; border-top: 1px solid var(--bg3);
@@ -198,7 +199,6 @@
       <span class="header-title">WebCraft Builder</span>
     </div>
     <div class="header-btns">
-      <button class="header-btn btn-save" onclick="saveAndExit()"><i class="fa-solid fa-save"></i> ذخیره</button>
       <a href="../dashboard.html" class="header-btn"><i class="fa-solid fa-arrow-right"></i> خروج</a>
     </div>
   </header>
@@ -242,19 +242,17 @@
           <p style="font-size:12px;color:var(--text-light);margin-bottom:16px;">آیا سایت شما نیاز به هدر دارد؟</p>
           <div class="option-grid">
             <div class="option-card selected" onclick="selectOption(this, 'header', 'yes')">
-              <i class="fa-solid fa-circle-check"></i><span>بله، هدر داشته باشد</span>
-              <small>با لوگو و منو</small>
+              <i class="fa-solid fa-circle-check"></i><span>بله</span><small>با لوگو و منو</small>
             </div>
             <div class="option-card" onclick="selectOption(this, 'header', 'no')">
-              <i class="fa-solid fa-circle-xmark"></i><span>خیر، بدون هدر</span>
-              <small>سایت ساده</small>
+              <i class="fa-solid fa-circle-xmark"></i><span>خیر</span><small>سایت ساده</small>
             </div>
           </div>
         </div>
 
         <div class="step" id="step2">
           <h3><i class="fa-solid fa-align-left"></i> متن‌های سایت</h3>
-          <p style="font-size:12px;color:var(--text-light);margin-bottom:16px;">کدام چینش‌های متن را نیاز دارید؟ (چند مورد)</p>
+          <p style="font-size:12px;color:var(--text-light);margin-bottom:16px;">چینش متن (چند مورد)</p>
           <div class="option-row" onclick="toggleCheck(this, 'textAlign', 'right')">
             <input type="checkbox" id="chkRight" checked> <i class="fa-solid fa-align-right"></i> <span>راست‌چین</span>
           </div>
@@ -267,89 +265,84 @@
         </div>
 
         <div class="step" id="step3">
-          <h3><i class="fa-solid fa-panel"></i> تنظیمات فوتر</h3>
-          <p style="font-size:12px;color:var(--text-light);margin-bottom:16px;">فوتر سایت شما چند خطی باشد؟</p>
+          <h3><i class="fa-solid fa-panel"></i> فوتر</h3>
+          <p style="font-size:12px;color:var(--text-light);margin-bottom:16px;">فوتر چند خطی باشد؟</p>
           <div class="option-grid">
             <div class="option-card" onclick="selectOption(this, 'footer', '1')">
-              <i class="fa-solid fa-minus"></i><span>تک خط</span>
-              <small>فقط کپی‌رایت</small>
+              <i class="fa-solid fa-minus"></i><span>تک خط</span><small>کپی‌رایت</small>
             </div>
             <div class="option-card selected" onclick="selectOption(this, 'footer', '2')">
-              <i class="fa-solid fa-equals"></i><span>دو خط</span>
-              <small>لینک + کپی‌رایت</small>
+              <i class="fa-solid fa-equals"></i><span>دو خط</span><small>لینک + کپی‌رایت</small>
             </div>
             <div class="option-card" onclick="selectOption(this, 'footer', '3')">
-              <i class="fa-solid fa-bars"></i><span>سه خط</span>
-              <small>آمار + لینک + کپی‌رایت</small>
+              <i class="fa-solid fa-bars"></i><span>سه خط</span><small>آمار + لینک + کپی‌رایت</small>
             </div>
           </div>
         </div>
 
         <div class="step" id="step4">
-          <h3><i class="fa-solid fa-chart-bar"></i> آمار سایت <span class="lock-badge"><i class="fa-solid fa-crown"></i> پرومیوم</span></h3>
-          <p style="font-size:12px;color:var(--text-light);margin-bottom:16px;">نمایش بازدید و آمار در فوتر</p>
+          <h3><i class="fa-solid fa-chart-bar"></i> آمار <span class="lock-badge" id="lockStats"><i class="fa-solid fa-crown"></i> پرومیوم</span></h3>
+          <p style="font-size:12px;color:var(--text-light);margin-bottom:16px;">نمایش آمار بازدید در فوتر</p>
           <div class="option-grid">
             <div class="option-card selected" onclick="selectOption(this, 'stats', 'no')">
               <i class="fa-solid fa-circle-xmark"></i><span>خیر</span>
             </div>
-            <div class="option-card locked" onclick="checkPremium('stats')">
-              <i class="fa-solid fa-circle-check"></i><span>بله</span>
-              <small>نمایش آمار بازدید</small>
+            <div class="option-card locked" id="cardStats" onclick="selectOption(this, 'stats', 'yes')">
+              <i class="fa-solid fa-circle-check"></i><span>بله</span><small>آمار بازدید</small>
             </div>
           </div>
         </div>
 
         <div class="step" id="step5">
-          <h3><i class="fa-solid fa-headset"></i> پشتیبانی <span class="lock-badge"><i class="fa-solid fa-crown"></i> پرومیوم</span></h3>
-          <p style="font-size:12px;color:var(--text-light);margin-bottom:16px;">بخش پشتیبانی آنلاین در سایت</p>
+          <h3><i class="fa-solid fa-headset"></i> پشتیبانی <span class="lock-badge" id="lockSupport"><i class="fa-solid fa-crown"></i> پرومیوم</span></h3>
+          <p style="font-size:12px;color:var(--text-light);margin-bottom:16px;">چت آنلاین در سایت</p>
           <div class="option-grid">
             <div class="option-card selected" onclick="selectOption(this, 'support', 'no')">
               <i class="fa-solid fa-circle-xmark"></i><span>خیر</span>
             </div>
-            <div class="option-card locked" onclick="checkPremium('support')">
-              <i class="fa-solid fa-circle-check"></i><span>بله</span>
-              <small>چت آنلاین</small>
+            <div class="option-card locked" id="cardSupport" onclick="selectOption(this, 'support', 'yes')">
+              <i class="fa-solid fa-circle-check"></i><span>بله</span><small>چت آنلاین</small>
             </div>
           </div>
           <div id="supportPromptArea" style="display:none;margin-top:12px;">
             <div class="form-group">
               <label>پرامپت پشتیبانی</label>
-              <textarea id="supportPrompt" rows="3" placeholder="توضیح نحوه پاسخگویی پشتیبان..."></textarea>
+              <textarea id="supportPrompt" rows="3" placeholder="توضیح نحوه پاسخگویی..."></textarea>
             </div>
           </div>
         </div>
 
         <div class="step" id="step6">
           <h3><i class="fa-solid fa-layer-group"></i> نوع بادی</h3>
-          <p style="font-size:12px;color:var(--text-light);margin-bottom:16px;">محتوای اصلی چگونه نمایش داده شود؟</p>
+          <p style="font-size:12px;color:var(--text-light);margin-bottom:16px;">چیدمان محتوا (چند مورد)</p>
           <div class="option-row" onclick="toggleCheck(this, 'bodyType', 'list')">
             <input type="checkbox" id="chkList"> <i class="fa-solid fa-list"></i> <span>لیستی</span>
           </div>
           <div class="option-row" onclick="toggleCheck(this, 'bodyType', 'button')">
             <input type="checkbox" id="chkButton"> <i class="fa-solid fa-square"></i> <span>دکمه‌ای</span>
           </div>
-          <div class="option-row locked" onclick="checkPremium('bodyCustom')">
+          <div class="option-row locked" id="rowCustom" onclick="toggleCheck(this, 'bodyType', 'custom')">
             <input type="checkbox" id="chkCustom" disabled> <i class="fa-solid fa-grid-2"></i> <span>مختصاتی</span>
-            <span class="lock-badge"><i class="fa-solid fa-crown"></i> پرومیوم</span>
+            <span class="lock-badge" id="lockCustom"><i class="fa-solid fa-crown"></i> پرومیوم</span>
           </div>
         </div>
 
         <div class="step" id="step7">
           <h3><i class="fa-solid fa-palette"></i> رنگ‌ها و صوت</h3>
-          <p style="font-size:12px;color:var(--text-light);margin-bottom:16px;">۳ رنگ اصلی + صوت‌ها را انتخاب کنید</p>
+          <p style="font-size:12px;color:var(--text-light);margin-bottom:16px;">۳ رنگ + ۳ صوت</p>
           <div class="form-group">
-            <label>رنگ ۱ (اصلی)</label>
-            <div class="color-picker-row"><input type="color" id="color1" value="#6366f1"><span>اصلی</span></div>
+            <label>رنگ اصلی</label>
+            <div class="color-picker-row"><input type="color" id="color1" value="#6366f1"></div>
           </div>
           <div class="form-group">
-            <label>رنگ ۲ (پس‌زمینه)</label>
-            <div class="color-picker-row"><input type="color" id="color2" value="#f8fafc"><span>پس‌زمینه</span></div>
+            <label>رنگ پس‌زمینه</label>
+            <div class="color-picker-row"><input type="color" id="color2" value="#f8fafc"></div>
           </div>
           <div class="form-group">
-            <label>رنگ ۳ (متن)</label>
-            <div class="color-picker-row"><input type="color" id="color3" value="#0f172a"><span>متن</span></div>
+            <label>رنگ متن</label>
+            <div class="color-picker-row"><input type="color" id="color3" value="#0f172a"></div>
           </div>
-          <div class="form-group"><label>صوت ۱</label><input type="text" id="sound1" placeholder="لینک صوت (اختیاری)"></div>
+          <div class="form-group"><label>صوت ۱</label><input type="text" id="sound1" placeholder="لینک صوت"></div>
           <div class="form-group"><label>صوت ۲</label><input type="text" id="sound2" placeholder="لینک صوت"></div>
           <div class="form-group"><label>صوت ۳</label><input type="text" id="sound3" placeholder="لینک صوت"></div>
         </div>
@@ -429,25 +422,26 @@
       return { domain: params.get('domain') };
     }
 
-    async function refreshUserFromServer() {
-      try {
-        const res = await fetch(API_URL, {
-          method: 'POST',
-          body: JSON.stringify({
-            action: 'login',
-            username: currentUser.username,
-            password: '' 
-          })
-        });
-        return currentUser;
-      } catch (e) {
-        return currentUser;
-      }
+    function unlockPremiumFeatures() {
+      document.querySelectorAll('.option-card.locked').forEach(el => {
+        el.classList.remove('locked');
+        el.style.opacity = '1';
+        el.style.cursor = 'pointer';
+      });
+      document.querySelectorAll('.option-row.locked').forEach(el => {
+        el.classList.remove('locked');
+        el.style.opacity = '1';
+        el.style.cursor = 'pointer';
+        const cb = el.querySelector('input[type="checkbox"]');
+        if (cb) cb.removeAttribute('disabled');
+      });
+      document.querySelectorAll('.lock-badge').forEach(el => {
+        el.classList.add('unlocked');
+        el.innerHTML = '<i class="fa-solid fa-unlock"></i> فعال';
+      });
     }
 
-    async function checkPremium(feature) {
-      if (!currentUser) return false;
-      
+    async function checkUserPremium() {
       try {
         const res = await fetch(API_URL, {
           method: 'POST',
@@ -458,17 +452,15 @@
         if (data && data.purchasedPlans) {
           currentUser.purchasedPlans = data.purchasedPlans;
         }
+        
+        const isPremium = currentUser.userType === 'owner' || 
+                          currentUser.userType === 'vip' || 
+                          (currentUser.purchasedPlans && currentUser.purchasedPlans.some(p => p !== 'plan_free'));
+        
+        if (isPremium) {
+          unlockPremiumFeatures();
+        }
       } catch (e) {}
-      
-      const isPremium = currentUser.userType === 'owner' || 
-                        currentUser.userType === 'vip' || 
-                        (currentUser.purchasedPlans && currentUser.purchasedPlans.some(p => p !== 'plan_free'));
-      
-      if (!isPremium) {
-        alert('این ویژگی مخصوص کاربران پرومیوم است. لطفاً اشتراک خود را ارتقا دهید.');
-        return false;
-      }
-      return true;
     }
 
     function selectOption(el, setting, value) {
@@ -584,8 +576,8 @@
         <li><i class="fa-solid fa-panel"></i> هدر <span>${labels.header[settings.header]}</span></li>
         <li><i class="fa-solid fa-align-left"></i> چینش متن <span>${settings.textAlign.join('، ')}</span></li>
         <li><i class="fa-solid fa-panel"></i> فوتر <span>${labels.footer[settings.footer]}</span></li>
-        <li><i class="fa-solid fa-chart-bar"></i> آمار <span>${labels.stats[settings.stats]} ${settings.stats === 'yes' ? '<small class="lock-badge">پرومیوم</small>' : ''}</span></li>
-        <li><i class="fa-solid fa-headset"></i> پشتیبانی <span>${labels.support[settings.support]} ${settings.support === 'yes' ? '<small class="lock-badge">پرومیوم</small>' : ''}</span></li>
+        <li><i class="fa-solid fa-chart-bar"></i> آمار <span>${labels.stats[settings.stats]}</span></li>
+        <li><i class="fa-solid fa-headset"></i> پشتیبانی <span>${labels.support[settings.support]}</span></li>
         <li><i class="fa-solid fa-layer-group"></i> نوع بادی <span>${settings.bodyType.length > 0 ? settings.bodyType.map(b => bodyTypeLabels[b] || b).join('، ') : 'انتخاب نشده'}</span></li>
         <li><i class="fa-solid fa-palette"></i> رنگ‌ها <span>${settings.color1}, ${settings.color2}, ${settings.color3}</span></li>
         <li><i class="fa-solid fa-music"></i> صوت‌ها <span>${[settings.sound1, settings.sound2, settings.sound3].filter(s => s).length} عدد</span></li>
@@ -655,17 +647,9 @@
             settings: JSON.stringify(settings)
           })
         });
-      } catch (e) {
-        console.log('ذخیره در سرور ناموفق');
-      }
+      } catch (e) {}
       
       localStorage.setItem('wc_settings_' + (domainName || projectId), JSON.stringify(settings));
-    }
-
-    async function saveAndExit() {
-      collectSettings();
-      await saveToServer();
-      alert('تنظیمات ذخیره شد.');
     }
 
     async function saveAndGoToBlockly() {
@@ -738,17 +722,7 @@
       }
       
       await loadSettingsFromServer();
-      
-      try {
-        const res = await fetch(API_URL, {
-          method: 'POST',
-          body: JSON.stringify({ action: 'getUserPlanInfo', userId: currentUser.userId })
-        });
-        const data = await res.json();
-        if (data && data.purchasedPlans) {
-          currentUser.purchasedPlans = data.purchasedPlans;
-        }
-      } catch (e) {}
+      await checkUserPremium();
       
       if (hasExistingSettings) {
         currentStep = 0;
