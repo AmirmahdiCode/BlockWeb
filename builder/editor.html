@@ -47,7 +47,23 @@
     .btn-save { background: var(--green); color: #fff; border: none; }
     .btn-save:hover { background: #059669; }
 
-    .main-container { flex: 1; display: flex; align-items: center; justify-content: center; padding: 20px; }
+    .loading-container {
+      display: flex; align-items: center; justify-content: center;
+      flex: 1; min-height: 60vh;
+    }
+    .loading-spinner { text-align: center; }
+    .loading-spinner i {
+      font-size: 40px; color: var(--primary);
+      animation: spin 1s linear infinite;
+    }
+    .loading-spinner p { margin-top: 12px; font-size: 13px; color: var(--text-light); }
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    .main-container { flex: 1; display: flex; align-items: center; justify-content: center; padding: 20px; display: none; }
+    .main-container.loaded { display: flex; }
 
     .wizard-card {
       background: var(--white); border-radius: 20px;
@@ -187,7 +203,14 @@
     </div>
   </header>
 
-  <div class="main-container">
+  <div class="loading-container" id="loadingContainer">
+    <div class="loading-spinner">
+      <i class="fa-solid fa-circle-notch"></i>
+      <p>در حال بارگذاری اطلاعات...</p>
+    </div>
+  </div>
+
+  <div class="main-container" id="mainContainer">
     <div class="wizard-card">
       <div class="wizard-header">
         <i class="fa-solid fa-wand-magic-sparkles"></i>
@@ -406,12 +429,40 @@
       return { domain: params.get('domain') };
     }
 
-    function checkPremium(feature) {
-      const user = currentUser;
-      if (!user) return false;
+    async function refreshUserFromServer() {
+      try {
+        const res = await fetch(API_URL, {
+          method: 'POST',
+          body: JSON.stringify({
+            action: 'login',
+            username: currentUser.username,
+            password: '' 
+          })
+        });
+        return currentUser;
+      } catch (e) {
+        return currentUser;
+      }
+    }
+
+    async function checkPremium(feature) {
+      if (!currentUser) return false;
       
-      const isPremium = user.userType === 'owner' || user.userType === 'vip' || 
-                        (user.purchasedPlans && user.purchasedPlans.some(p => p !== 'plan_free'));
+      try {
+        const res = await fetch(API_URL, {
+          method: 'POST',
+          body: JSON.stringify({ action: 'getUserPlanInfo', userId: currentUser.userId })
+        });
+        const data = await res.json();
+        
+        if (data && data.purchasedPlans) {
+          currentUser.purchasedPlans = data.purchasedPlans;
+        }
+      } catch (e) {}
+      
+      const isPremium = currentUser.userType === 'owner' || 
+                        currentUser.userType === 'vip' || 
+                        (currentUser.purchasedPlans && currentUser.purchasedPlans.some(p => p !== 'plan_free'));
       
       if (!isPremium) {
         alert('این ویژگی مخصوص کاربران پرومیوم است. لطفاً اشتراک خود را ارتقا دهید.');
@@ -661,11 +712,11 @@
           } catch(e) {}
         }
       }
-      
-      const saved = localStorage.getItem('wc_settings_' + domainName);
-      if (saved && !hasExistingSettings) {
-        try { settings = { ...settings, ...JSON.parse(saved) }; hasExistingSettings = true; } catch(e) {}
-      }
+    }
+
+    function showMainContent() {
+      document.getElementById('loadingContainer').style.display = 'none';
+      document.getElementById('mainContainer').classList.add('loaded');
     }
 
     (async function init() {
@@ -688,6 +739,17 @@
       
       await loadSettingsFromServer();
       
+      try {
+        const res = await fetch(API_URL, {
+          method: 'POST',
+          body: JSON.stringify({ action: 'getUserPlanInfo', userId: currentUser.userId })
+        });
+        const data = await res.json();
+        if (data && data.purchasedPlans) {
+          currentUser.purchasedPlans = data.purchasedPlans;
+        }
+      } catch (e) {}
+      
       if (hasExistingSettings) {
         currentStep = 0;
         document.getElementById('wizardFooter').style.display = 'none';
@@ -706,6 +768,7 @@
         document.getElementById('chkButton').checked = settings.bodyType.includes('button');
       }
       
+      showMainContent();
       updateStep();
     })();
   </script>
