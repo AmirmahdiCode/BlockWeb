@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>WebCraft | پروفایل</title>
+  <title>BlockWeb | پروفایل</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <script src="https://developer.eitaa.com/eitaa-web-app.js"></script>
   <style>
@@ -137,13 +137,12 @@
     .stat-label { font-size: 10px; color: var(--text-light); margin-top: 2px; }
     .stat-remaining .stat-number { color: var(--green); }
     .stat-max .stat-number { color: var(--primary); }
-    .stat-max-row { display: flex; align-items: center; justify-content: center; gap: 6px; }
     .btn-upgrade-small {
       display: inline-flex; align-items: center; gap: 3px;
       font-size: 9px; font-weight: 600; color: var(--primary);
       background: #eef2ff; padding: 3px 8px; border-radius: 10px;
       cursor: pointer; border: none; font-family: inherit;
-      transition: all 0.2s ease; text-decoration: none;
+      transition: all 0.2s ease; text-decoration: none; margin-top: 4px;
     }
     .btn-upgrade-small:hover { background: #e0e7ff; }
 
@@ -276,7 +275,7 @@
       <div class="header-right">
         <div class="header-logo"><i class="fa-solid fa-cubes"></i></div>
         <div>
-          <div class="header-title">WebCraft</div>
+          <div class="header-title">BlockWeb</div>
           <div class="header-subtitle">سایت بسازید، بدون کدنویسی</div>
         </div>
       </div>
@@ -410,7 +409,7 @@
   </div>
 
   <script>
-    const API_URL = 'https://script.google.com/macros/s/AKfycbxwzQT4V2OKe9Ag1P9tRL5OKB2wsryRdAwrDZ81ZwZYg-H8GdKKzusT8Y4tJbLu1S27/exec';
+    const API_URL = 'https://script.google.com/macros/s/AKfycby1I5tG6oh2p5pPQQUqoLxVYTtdrOrTj_qzOf1L4gMcJO3n1BtK5szNJihmXmqJZQY/exec';
     const SESSION_DURATION = 3 * 60 * 60 * 1000;
 
     const avatarIcons = [
@@ -427,7 +426,7 @@
     const userTypeLabels = { 'normal': 'عادی', 'developer': 'توسعه دهنده', 'vip': 'ویژه', 'owner': 'مالک' };
     const userTypeClasses = { 'normal': 'type-normal', 'developer': 'type-developer', 'vip': 'type-vip', 'owner': 'type-owner' };
 
-    class WebCraftApp {
+    class BlockWebApp {
       constructor() {
         this.webApp = window.Eitaa && window.Eitaa.WebApp ? window.Eitaa.WebApp : null;
         if (this.webApp) { this.webApp.ready(); this.webApp.expand(); }
@@ -435,23 +434,23 @@
     }
 
     function checkSession() {
-      const sessionData = localStorage.getItem('webcraft_session');
+      const sessionData = localStorage.getItem('blockweb_session');
       if (!sessionData) return null;
       try {
         const session = JSON.parse(sessionData);
         if (Date.now() - session.timestamp > SESSION_DURATION) {
-          localStorage.removeItem('webcraft_session');
+          localStorage.removeItem('blockweb_session');
           return null;
         }
         return session.user;
       } catch (e) {
-        localStorage.removeItem('webcraft_session');
+        localStorage.removeItem('blockweb_session');
         return null;
       }
     }
 
     function handleLogout() {
-      localStorage.removeItem('webcraft_session');
+      localStorage.removeItem('blockweb_session');
       window.location.href = 'login.html';
     }
 
@@ -469,7 +468,6 @@
         const data = await res.json();
         if (data) {
           maxProjects = data.maxProjects || 1;
-          document.getElementById('infoPlan') && (document.getElementById('infoPlan').textContent = data.planNames ? data.planNames.join('، ') : 'رایگان');
           const hasOnlyFree = data.purchasedPlans && data.purchasedPlans.length === 1 && data.purchasedPlans[0] === 'plan_free';
           document.getElementById('upgradeCard').style.display = hasOnlyFree ? 'block' : 'none';
         }
@@ -574,9 +572,9 @@
           currentUser.fullName = fullName;
           currentUser.username = username;
           currentUser.avatar = selectedAvatar;
-          const sessionData = JSON.parse(localStorage.getItem('webcraft_session'));
+          const sessionData = JSON.parse(localStorage.getItem('blockweb_session'));
           sessionData.user = currentUser;
-          localStorage.setItem('webcraft_session', JSON.stringify(sessionData));
+          localStorage.setItem('blockweb_session', JSON.stringify(sessionData));
           msgEl.textContent = 'تغییرات با موفقیت ذخیره شد';
           msgEl.className = 'form-message success';
           setTimeout(() => { closeEditModal(); loadProfile(); }, 800);
@@ -595,7 +593,7 @@
     });
 
     (function init() {
-      new WebCraftApp();
+      new BlockWebApp();
       loadProfile();
     })();
   </script>
