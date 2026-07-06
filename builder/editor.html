@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WebCraft | ویرایش پروژه</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <script src="https://developer.eitaa.com/eitaa-web-app.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg: #f8fafc; --bg2: #f1f5f9; --bg3: #e2e8f0;
+      --primary: #6366f1; --primary-dark: #4f46e5; --primary-light: #818cf8;
+      --dark: #0f172a; --text: #334155; --text-light: #94a3b8;
+      --white: #ffffff; --red: #f43f5e; --green: #10b981;
+      --orange: #f59e0b; --purple: #a855f7;
+    }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: var(--bg); color: var(--text); min-height: 100vh;
+      display: flex; flex-direction: column;
+    }
+    .header {
+      background: var(--white); box-shadow: 0 1px 8px rgba(0,0,0,0.03);
+      padding: 14px 20px; border-bottom: 1px solid var(--bg3);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .header-right { display: flex; align-items: center; gap: 10px; }
+    .header-logo {
+      width: 42px; height: 42px; border-radius: 12px;
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 3px 12px rgba(99,102,241,0.2);
+    }
+    .header-logo i { font-size: 20px; color: #fff; }
+    .header-title { font-size: 20px; font-weight: 700; color: var(--dark); }
+    .header-btns { display: flex; align-items: center; gap: 8px; }
+    .header-btn {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 12px; font-weight: 600; text-decoration: none;
+      padding: 7px 12px; border-radius: 8px;
+      transition: all 0.2s ease; white-space: nowrap;
+      font-family: inherit; cursor: pointer; background: none;
+      color: var(--text); border: 1.5px solid var(--bg3);
+    }
+    .header-btn:hover { background: var(--bg2); }
+    .btn-save { background: var(--green); color: #fff; border: none; }
+    .btn-save:hover { background: #059669; }
+
+    .main-container { flex: 1; display: flex; align-items: center; justify-content: center; padding: 20px; }
+
+    .wizard-card {
+      background: var(--white); border-radius: 20px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.08); width: 100%;
+      max-width: 600px; overflow: hidden; border: 1px solid var(--bg3);
+    }
+    .wizard-header {
+      padding: 24px; text-align: center;
+      background: linear-gradient(135deg, #eef2ff, #e0e7ff);
+    }
+    .wizard-header i { font-size: 36px; color: var(--primary); margin-bottom: 8px; }
+    .wizard-header h2 { font-size: 18px; font-weight: 700; color: var(--dark); }
+    .wizard-header p { font-size: 12px; color: var(--text-light); margin-top: 4px; }
+
+    .progress-bar {
+      display: flex; padding: 0 24px; gap: 4px; margin: 16px 0;
+    }
+    .progress-dot {
+      flex: 1; height: 4px; border-radius: 2px; background: var(--bg3);
+      transition: all 0.3s ease;
+    }
+    .progress-dot.done { background: var(--primary); }
+    .progress-dot.current { background: var(--primary-light); }
+
+    .wizard-body { padding: 20px 24px; min-height: 280px; }
+
+    .step { display: none; }
+    .step.active { display: block; }
+
+    .step h3 { font-size: 16px; color: var(--dark); margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+    .step h3 i { color: var(--primary); }
+
+    .option-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    .option-card {
+      padding: 16px; border-radius: 12px; border: 2px solid var(--bg3);
+      cursor: pointer; text-align: center; transition: all 0.3s ease;
+      background: var(--white);
+    }
+    .option-card:hover { border-color: var(--primary-light); background: #eef2ff; }
+    .option-card.selected { border-color: var(--primary); background: #eef2ff; }
+    .option-card.locked { opacity: 0.6; cursor: not-allowed; }
+    .option-card.locked:hover { border-color: var(--bg3); background: var(--white); }
+    .option-card i { font-size: 24px; color: var(--primary); margin-bottom: 8px; display: block; }
+    .option-card span { font-size: 13px; font-weight: 600; color: var(--dark); }
+    .option-card small { font-size: 10px; color: var(--text-light); display: block; margin-top: 4px; }
+
+    .option-row {
+      display: flex; align-items: center; gap: 12px; padding: 12px;
+      border-radius: 10px; border: 1.5px solid var(--bg3); margin-bottom: 8px;
+      cursor: pointer; transition: all 0.3s ease;
+    }
+    .option-row:hover { border-color: var(--primary-light); }
+    .option-row.selected { border-color: var(--primary); background: #eef2ff; }
+    .option-row.locked { opacity: 0.6; cursor: not-allowed; }
+    .option-row.locked:hover { border-color: var(--bg3); background: var(--white); }
+    .option-row input[type="checkbox"] { accent-color: var(--primary); }
+
+    .form-group { margin-bottom: 14px; }
+    .form-group label { display: block; font-size: 12px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+    .form-group input, .form-group textarea {
+      width: 100%; padding: 11px 14px; border: 1.5px solid var(--bg3); border-radius: 10px;
+      font-size: 13px; color: var(--dark); background: var(--bg);
+      outline: none; font-family: inherit; transition: all 0.3s ease; resize: vertical;
+    }
+    .form-group input:focus, .form-group textarea:focus {
+      border-color: var(--primary); box-shadow: 0 0 0 3px rgba(99,102,241,0.1);
+    }
+
+    .color-picker-row { display: flex; gap: 10px; align-items: center; }
+    .color-picker-row input[type="color"] { width: 50px; height: 40px; border: none; cursor: pointer; border-radius: 8px; }
+
+    .sound-row { display: flex; gap: 10px; align-items: center; margin-bottom: 8px; }
+    .sound-row input { flex: 1; }
+
+    .lock-badge {
+      display: inline-flex; align-items: center; gap: 4px;
+      font-size: 10px; color: var(--orange); background: #fef3c7;
+      padding: 3px 8px; border-radius: 8px; margin-right: 6px;
+    }
+
+    .wizard-footer {
+      padding: 16px 24px; border-top: 1px solid var(--bg3);
+      display: flex; justify-content: space-between; gap: 10px;
+    }
+    .btn-nav {
+      padding: 11px 24px; border-radius: 10px; font-size: 13px; font-weight: 600;
+      cursor: pointer; font-family: inherit; transition: all 0.3s ease;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .btn-prev { background: var(--bg2); color: var(--text); border: 1px solid var(--bg3); }
+    .btn-prev:hover { background: var(--bg3); }
+    .btn-next { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: #fff; border: none; }
+    .btn-next:hover { box-shadow: 0 4px 16px rgba(99,102,241,0.3); }
+
+    .summary-list { list-style: none; padding: 0; }
+    .summary-list li {
+      padding: 10px 0; border-bottom: 1px solid var(--bg2);
+      font-size: 13px; display: flex; align-items: center; gap: 10px;
+    }
+    .summary-list li i { color: var(--primary); width: 20px; text-align: center; }
+    .summary-list li span { color: var(--text-light); margin-right: auto; font-size: 11px; }
+
+    @media (max-width: 500px) {
+      .option-grid { grid-template-columns: 1fr; }
+      .wizard-body { padding: 16px; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="header">
+    <div class="header-right">
+      <div class="header-logo"><i class="fa-solid fa-cubes"></i></div>
+      <span class="header-title">WebCraft Builder</span>
+    </div>
+    <div class="header-btns">
+      <button class="header-btn btn-save" onclick="saveAndExit()"><i class="fa-solid fa-save"></i> ذخیره</button>
+      <a href="../dashboard.html" class="header-btn"><i class="fa-solid fa-arrow-right"></i> خروج</a>
+    </div>
+  </header>
+
+  <div class="main-container">
+    <div class="wizard-card">
+      <div class="wizard-header">
+        <i class="fa-solid fa-wand-magic-sparkles"></i>
+        <h2 id="wizardTitle">ساخت سایت</h2>
+        <p>مرحله <span id="stepNumber">۱</span> از ۸</p>
+      </div>
+      <div class="progress-bar" id="progressBar"></div>
+
+      <div class="wizard-body">
+
+        <div class="step active" id="step1">
+          <h3><i class="fa-solid fa-panel"></i> تنظیمات هدر</h3>
+          <p style="font-size:12px;color:var(--text-light);margin-bottom:16px;">آیا سایت شما نیاز به هدر دارد؟</p>
+          <div class="option-grid">
+            <div class="option-card selected" onclick="selectOption(this, 'header', 'yes')">
+              <i class="fa-solid fa-circle-check"></i><span>بله، هدر داشته باشد</span>
+              <small>با لوگو و منو</small>
+            </div>
+            <div class="option-card" onclick="selectOption(this, 'header', 'no')">
+              <i class="fa-solid fa-circle-xmark"></i><span>خیر، بدون هدر</span>
+              <small>سایت ساده</small>
+            </div>
+          </div>
+        </div>
+
+        <div class="step" id="step2">
+          <h3><i class="fa-solid fa-align-left"></i> متن‌های سایت</h3>
+          <p style="font-size:12px;color:var(--text-light);margin-bottom:16px;">کدام چینش‌های متن را نیاز دارید؟ (چند مورد)</p>
+          <div class="option-row" onclick="toggleCheck(this, 'textAlign', 'right')">
+            <input type="checkbox" id="chkRight" checked> <i class="fa-solid fa-align-right"></i> <span>راست‌چین</span>
+          </div>
+          <div class="option-row" onclick="toggleCheck(this, 'textAlign', 'center')">
+            <input type="checkbox" id="chkCenter"> <i class="fa-solid fa-align-center"></i> <span>وسط‌چین</span>
+          </div>
+          <div class="option-row" onclick="toggleCheck(this, 'textAlign', 'left')">
+            <input type="checkbox" id="chkLeft"> <i class="fa-solid fa-align-left"></i> <span>چپ‌چین</span>
+          </div>
+        </div>
+
+        <div class="step" id="step3">
+          <h3><i class="fa-solid fa-panel"></i> تنظیمات فوتر</h3>
+          <p style="font-size:12px;color:var(--text-light);margin-bottom:16px;">فوتر سایت شما چند خطی باشد؟</p>
+          <div class="option-grid">
+            <div class="option-card" onclick="selectOption(this, 'footer', '1')">
+              <i class="fa-solid fa-minus"></i><span>تک خط</span>
+              <small>فقط کپی‌رایت</small>
+            </div>
+            <div class="option-card selected" onclick="selectOption(this, 'footer', '2')">
+              <i class="fa-solid fa-equals"></i><span>دو خط</span>
+              <small>لینک + کپی‌رایت</small>
+            </div>
+            <div class="option-card" onclick="selectOption(this, 'footer', '3')">
+              <i class="fa-solid fa-bars"></i><span>سه خط</span>
+              <small>آمار + لینک + کپی‌رایت</small>
+            </div>
+          </div>
+        </div>
+
+        <div class="step" id="step4">
+          <h3><i class="fa-solid fa-chart-bar"></i> آمار سایت <span class="lock-badge"><i class="fa-solid fa-crown"></i> پرومیوم</span></h3>
+          <p style="font-size:12px;color:var(--text-light);margin-bottom:16px;">نمایش بازدید و آمار در فوتر</p>
+          <div class="option-grid">
+            <div class="option-card selected" onclick="selectOption(this, 'stats', 'no')">
+              <i class="fa-solid fa-circle-xmark"></i><span>خیر</span>
+            </div>
+            <div class="option-card locked" onclick="checkPremium('stats')">
+              <i class="fa-solid fa-circle-check"></i><span>بله</span>
+              <small>نمایش آمار بازدید</small>
+            </div>
+          </div>
+        </div>
+
+        <div class="step" id="step5">
+          <h3><i class="fa-solid fa-headset"></i> پشتیبانی <span class="lock-badge"><i class="fa-solid fa-crown"></i> پرومیوم</span></h3>
+          <p style="font-size:12px;color:var(--text-light);margin-bottom:16px;">بخش پشتیبانی آنلاین در سایت</p>
+          <div class="option-grid">
+            <div class="option-card selected" onclick="selectOption(this, 'support', 'no')">
+              <i class="fa-solid fa-circle-xmark"></i><span>خیر</span>
+            </div>
+            <div class="option-card locked" onclick="checkPremium('support')">
+              <i class="fa-solid fa-circle-check"></i><span>بله</span>
+              <small>چت آنلاین</small>
+            </div>
+          </div>
+          <div id="supportPromptArea" style="display:none;margin-top:12px;">
+            <div class="form-group">
+              <label>پرامپت پشتیبانی</label>
+              <textarea id="supportPrompt" rows="3" placeholder="توضیح نحوه پاسخگویی پشتیبان..."></textarea>
+            </div>
+          </div>
+        </div>
+
+        <div class="step" id="step6">
+          <h3><i class="fa-solid fa-layer-group"></i> نوع بادی</h3>
+          <p style="font-size:12px;color:var(--text-light);margin-bottom:16px;">محتوای اصلی چگونه نمایش داده شود؟</p>
+          <div class="option-row" onclick="toggleCheck(this, 'bodyType', 'list')">
+            <input type="checkbox" id="chkList"> <i class="fa-solid fa-list"></i> <span>لیستی</span>
+          </div>
+          <div class="option-row" onclick="toggleCheck(this, 'bodyType', 'button')">
+            <input type="checkbox" id="chkButton"> <i class="fa-solid fa-square"></i> <span>دکمه‌ای</span>
+          </div>
+          <div class="option-row locked" onclick="checkPremium('bodyCustom')">
+            <input type="checkbox" id="chkCustom" disabled> <i class="fa-solid fa-grid-2"></i> <span>مختصاتی</span>
+            <span class="lock-badge"><i class="fa-solid fa-crown"></i> پرومیوم</span>
+          </div>
+        </div>
+
+        <div class="step" id="step7">
+          <h3><i class="fa-solid fa-palette"></i> رنگ‌ها و صوت</h3>
+          <p style="font-size:12px;color:var(--text-light);margin-bottom:16px;">۳ رنگ اصلی + صوت‌ها را انتخاب کنید</p>
+          <div class="form-group">
+            <label>رنگ ۱ (اصلی)</label>
+            <div class="color-picker-row"><input type="color" id="color1" value="#6366f1"><span>اصلی</span></div>
+          </div>
+          <div class="form-group">
+            <label>رنگ ۲ (پس‌زمینه)</label>
+            <div class="color-picker-row"><input type="color" id="color2" value="#f8fafc"><span>پس‌زمینه</span></div>
+          </div>
+          <div class="form-group">
+            <label>رنگ ۳ (متن)</label>
+            <div class="color-picker-row"><input type="color" id="color3" value="#0f172a"><span>متن</span></div>
+          </div>
+          <div class="form-group"><label>صوت ۱</label><input type="text" id="sound1" placeholder="لینک صوت (اختیاری)"></div>
+          <div class="form-group"><label>صوت ۲</label><input type="text" id="sound2" placeholder="لینک صوت"></div>
+          <div class="form-group"><label>صوت ۳</label><input type="text" id="sound3" placeholder="لینک صوت"></div>
+        </div>
+
+        <div class="step" id="step8">
+          <h3><i class="fa-solid fa-circle-check"></i> تأیید نهایی</h3>
+          <ul class="summary-list" id="summaryList"></ul>
+        </div>
+
+      </div>
+
+      <div class="wizard-footer">
+        <button class="btn-nav btn-prev" id="btnPrev" onclick="prevStep()" style="visibility:hidden;">
+          <i class="fa-solid fa-arrow-right"></i> قبلی
+        </button>
+        <span id="spacer"></span>
+        <button class="btn-nav btn-next" id="btnNext" onclick="nextStep()">
+          بعدی <i class="fa-solid fa-arrow-left"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const API_URL = 'https://script.google.com/macros/s/AKfycbyTonkpz4xa6rXY9ngUmpCyeJjipKMMOzDYAtWsmbXtuZEC7-bLIDui9FxG816Azys1/exec';
+    const SESSION_DURATION = 3 * 60 * 60 * 1000;
+
+    let currentStep = 1;
+    const totalSteps = 8;
+    
+    let settings = {
+      header: 'yes',
+      textAlign: ['right'],
+      footer: '2',
+      stats: 'no',
+      support: 'no',
+      supportPrompt: '',
+      bodyType: [],
+      color1: '#6366f1',
+      color2: '#f8fafc',
+      color3: '#0f172a',
+      sound1: '',
+      sound2: '',
+      sound3: ''
+    };
+
+    let projectId = null;
+    let domainName = null;
+    let currentUser = null;
+
+    class WebCraftApp {
+      constructor() {
+        this.webApp = window.Eitaa && window.Eitaa.WebApp ? window.Eitaa.WebApp : null;
+        if (this.webApp) { this.webApp.ready(); this.webApp.expand(); }
+      }
+    }
+
+    function checkSession() {
+      const sessionData = localStorage.getItem('webcraft_session');
+      if (!sessionData) return null;
+      try {
+        const session = JSON.parse(sessionData);
+        if (Date.now() - session.timestamp > SESSION_DURATION) {
+          localStorage.removeItem('webcraft_session');
+          return null;
+        }
+        return session.user;
+      } catch (e) {
+        localStorage.removeItem('webcraft_session');
+        return null;
+      }
+    }
+
+    function getQueryParams() {
+      const params = new URLSearchParams(window.location.search);
+      return { project: params.get('project') };
+    }
+
+    function checkPremium(feature) {
+      const user = currentUser;
+      if (!user) return false;
+      
+      const isPremium = user.userType === 'owner' || user.userType === 'vip' || 
+                        (user.purchasedPlans && user.purchasedPlans.some(p => p !== 'plan_free'));
+      
+      if (!isPremium) {
+        alert('این ویژگی مخصوص کاربران پرومیوم است. لطفاً اشتراک خود را ارتقا دهید.');
+        return false;
+      }
+      return true;
+    }
+
+    function selectOption(el, setting, value) {
+      if (el.classList.contains('locked')) return;
+      
+      const parent = el.parentElement;
+      parent.querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
+      el.classList.add('selected');
+      settings[setting] = value;
+      
+      if (setting === 'support') {
+        document.getElementById('supportPromptArea').style.display = value === 'yes' ? 'block' : 'none';
+      }
+    }
+
+    function toggleCheck(el, setting, value) {
+      if (el.classList.contains('locked')) return;
+      
+      const checkbox = el.querySelector('input[type="checkbox"]');
+      checkbox.checked = !checkbox.checked;
+      
+      if (checkbox.checked) {
+        el.classList.add('selected');
+        if (!settings[setting].includes(value)) settings[setting].push(value);
+      } else {
+        el.classList.remove('selected');
+        settings[setting] = settings[setting].filter(v => v !== value);
+      }
+    }
+
+    function collectSettings() {
+      settings.color1 = document.getElementById('color1').value;
+      settings.color2 = document.getElementById('color2').value;
+      settings.color3 = document.getElementById('color3').value;
+      settings.sound1 = document.getElementById('sound1').value;
+      settings.sound2 = document.getElementById('sound2').value;
+      settings.sound3 = document.getElementById('sound3').value;
+      if (settings.support === 'yes') {
+        settings.supportPrompt = document.getElementById('supportPrompt').value;
+      }
+    }
+
+    function updateSummary() {
+      const list = document.getElementById('summaryList');
+      collectSettings();
+      
+      const labels = {
+        header: { yes: 'دارد', no: 'ندارد' },
+        footer: { '1': 'تک خط', '2': 'دو خط', '3': 'سه خط' },
+        stats: { yes: 'دارد', no: 'ندارد' },
+        support: { yes: 'دارد', no: 'ندارد' }
+      };
+      
+      const bodyTypeLabels = { list: 'لیستی', button: 'دکمه‌ای', custom: 'مختصاتی' };
+      
+      list.innerHTML = `
+        <li><i class="fa-solid fa-panel"></i> هدر <span>${labels.header[settings.header]}</span></li>
+        <li><i class="fa-solid fa-align-left"></i> چینش متن <span>${settings.textAlign.join('، ')}</span></li>
+        <li><i class="fa-solid fa-panel"></i> فوتر <span>${labels.footer[settings.footer]}</span></li>
+        <li><i class="fa-solid fa-chart-bar"></i> آمار <span>${labels.stats[settings.stats]} ${settings.stats === 'yes' ? '<small class="lock-badge">پرومیوم</small>' : ''}</span></li>
+        <li><i class="fa-solid fa-headset"></i> پشتیبانی <span>${labels.support[settings.support]} ${settings.support === 'yes' ? '<small class="lock-badge">پرومیوم</small>' : ''}</span></li>
+        <li><i class="fa-solid fa-layer-group"></i> نوع بادی <span>${settings.bodyType.length > 0 ? settings.bodyType.map(b => bodyTypeLabels[b] || b).join('، ') : 'انتخاب نشده'}</span></li>
+        <li><i class="fa-solid fa-palette"></i> رنگ‌ها <span>${settings.color1}, ${settings.color2}, ${settings.color3}</span></li>
+        <li><i class="fa-solid fa-music"></i> صوت‌ها <span>${[settings.sound1, settings.sound2, settings.sound3].filter(s => s).length} عدد</span></li>
+      `;
+    }
+
+    function updateStep() {
+      document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+      document.getElementById('step' + currentStep).classList.add('active');
+      document.getElementById('stepNumber').textContent = currentStep;
+      
+      document.getElementById('btnPrev').style.visibility = currentStep === 1 ? 'hidden' : 'visible';
+      
+      const btnNext = document.getElementById('btnNext');
+      if (currentStep === totalSteps) {
+        btnNext.innerHTML = 'تأیید و ادامه <i class="fa-solid fa-check"></i>';
+        updateSummary();
+      } else {
+        btnNext.innerHTML = 'بعدی <i class="fa-solid fa-arrow-left"></i>';
+      }
+      
+      updateProgressBar();
+    }
+
+    function updateProgressBar() {
+      const bar = document.getElementById('progressBar');
+      let dots = '';
+      for (let i = 1; i <= totalSteps; i++) {
+        let cls = '';
+        if (i < currentStep) cls = 'done';
+        else if (i === currentStep) cls = 'current';
+        dots += `<div class="progress-dot ${cls}"></div>`;
+      }
+      bar.innerHTML = dots;
+    }
+
+    function nextStep() {
+      collectSettings();
+      
+      if (currentStep < totalSteps) {
+        currentStep++;
+        updateStep();
+      } else {
+        saveAndContinue();
+      }
+    }
+
+    function prevStep() {
+      if (currentStep > 1) {
+        collectSettings();
+        currentStep--;
+        updateStep();
+      }
+    }
+
+    async function saveToServer() {
+      if (!projectId) return;
+      
+      try {
+        await fetch(API_URL, {
+          method: 'POST',
+          body: JSON.stringify({
+            action: 'saveProjectSettings',
+            projectId: projectId,
+            domain: domainName || '',
+            settings: JSON.stringify(settings)
+          })
+        });
+      } catch (e) {
+        console.log('ذخیره در سرور ناموفق');
+      }
+      
+      localStorage.setItem('wc_settings_' + projectId, JSON.stringify(settings));
+    }
+
+    async function saveAndExit() {
+      collectSettings();
+      await saveToServer();
+      alert('تنظیمات ذخیره شد.');
+    }
+
+    async function saveAndContinue() {
+      collectSettings();
+      await saveToServer();
+      
+      if (projectId) {
+        window.location.href = 'blockly.html?project=' + projectId;
+      }
+    }
+
+    async function loadSettingsFromServer() {
+      if (!projectId) return;
+      
+      try {
+        const res = await fetch(API_URL, {
+          method: 'POST',
+          body: JSON.stringify({ action: 'getProjectSettings', projectId: projectId })
+        });
+        const data = await res.json();
+        if (data.success && data.settings) {
+          settings = { ...settings, ...data.settings };
+        }
+      } catch (e) {
+        const saved = localStorage.getItem('wc_settings_' + projectId);
+        if (saved) {
+          try { settings = { ...settings, ...JSON.parse(saved) }; } catch(e) {}
+        }
+      }
+    }
+
+    (async function init() {
+      new WebCraftApp();
+      
+      currentUser = checkSession();
+      if (!currentUser) {
+        window.location.href = '../login.html';
+        return;
+      }
+      
+      const params = getQueryParams();
+      projectId = params.project;
+      
+      await loadSettingsFromServer();
+      
+      if (settings.textAlign.length > 0) {
+        document.getElementById('chkRight').checked = settings.textAlign.includes('right');
+        document.getElementById('chkCenter').checked = settings.textAlign.includes('center');
+        document.getElementById('chkLeft').checked = settings.textAlign.includes('left');
+      }
+      if (settings.bodyType.length > 0) {
+        document.getElementById('chkList').checked = settings.bodyType.includes('list');
+        document.getElementById('chkButton').checked = settings.bodyType.includes('button');
+      }
+      
+      document.getElementById('color1').value = settings.color1;
+      document.getElementById('color2').value = settings.color2;
+      document.getElementById('color3').value = settings.color3;
+      document.getElementById('sound1').value = settings.sound1 || '';
+      document.getElementById('sound2').value = settings.sound2 || '';
+      document.getElementById('sound3').value = settings.sound3 || '';
+      
+      updateStep();
+    })();
+  </script>
+
+</body>
+</html>
