@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>WebCraft | پشتیبانی</title>
+  <title>BlockWeb | پشتیبانی</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <script src="https://developer.eitaa.com/eitaa-web-app.js"></script>
   <style>
@@ -169,7 +169,7 @@
       <div class="header-right">
         <div class="header-logo"><i class="fa-solid fa-cubes"></i></div>
         <div>
-          <div class="header-title">WebCraft</div>
+          <div class="header-title">BlockWeb</div>
           <div class="header-subtitle">سایت بسازید، بدون کدنویسی</div>
         </div>
       </div>
@@ -185,13 +185,13 @@
     <div class="chat-container">
       <div class="chat-header">
         <i class="fa-solid fa-headset"></i>
-        <h3>پشتیبانی WebCraft</h3>
+        <h3>پشتیبانی BlockWeb</h3>
         <span class="badge">AI</span>
       </div>
       <div class="chat-messages" id="chatMessages">
         <div class="message support">
-          سلام! من دستیار WebCraft هستم.<br>
-          درباره ساخت سایت، تنظیمات، اشتراک و هر چیزی مربوط به WebCraft می‌تونی ازم بپرسی.
+          سلام! من دستیار BlockWeb هستم.<br>
+          درباره ساخت سایت، تنظیمات، اشتراک و هر چیزی مربوط به BlockWeb می‌تونی ازم بپرسی.
         </div>
       </div>
       <div class="topics-hint">
@@ -214,7 +214,7 @@
       <a href="ads.html"><i class="fa-solid fa-ad"></i> رزرو تبلیغات</a>
       <a href="dashboard.html"><i class="fa-solid fa-home"></i> داشبورد</a>
     </div>
-    <p class="footer-text">WebCraft — کلیه حقوق محفوظ است</p>
+    <p class="footer-text">BlockWeb — کلیه حقوق محفوظ است</p>
   </footer>
 
   <script>
@@ -224,10 +224,10 @@
     let isWaiting = false;
     let chatHistory = [];
 
-    const SYSTEM_PROMPT = `تو دستیار پشتیبانی WebCraft هستی. WebCraft یه سایت‌ساز بدون کدنویسیه.
+    const SYSTEM_PROMPT = `تو دستیار پشتیبانی BlockWeb هستی. BlockWeb یه سایت‌ساز بدون کدنویسی با بلوک‌های آماده‌ست.
 
 موضوعاتی که می‌تونی کمک کنی:
-- نحوه ساخت سایت با WebCraft
+- نحوه ساخت سایت با BlockWeb
 - راهنمایی درباره تنظیمات ظاهری (رنگ، فونت، هدر، فوتر)
 - مشکلات فنی در طراحی سایت
 - راهنمایی درباره اشتراک‌ها و پلن‌ها
@@ -237,15 +237,31 @@
 
 موضوعاتی که نباید پاسخ بدی:
 - سوالات سیاسی، مذهبی، جنسی، خشونت‌آمیز
-- سوالات شخصی خارج از WebCraft
-- کدنویسی خارج از حوزه WebCraft
+- سوالات شخصی خارج از BlockWeb
+- کدنویسی خارج از حوزه BlockWeb
 
 همیشه پاسخ‌هات کوتاه، مفید، دوستانه و به زبان فارسی باشه.`;
 
-    class WebCraftApp {
+    class BlockWebApp {
       constructor() {
         this.webApp = window.Eitaa && window.Eitaa.WebApp ? window.Eitaa.WebApp : null;
         if (this.webApp) { this.webApp.ready(); this.webApp.expand(); }
+      }
+    }
+
+    function checkSession() {
+      const sessionData = localStorage.getItem('blockweb_session');
+      if (!sessionData) return null;
+      try {
+        const session = JSON.parse(sessionData);
+        if (Date.now() - session.timestamp > SESSION_DURATION) {
+          localStorage.removeItem('blockweb_session');
+          return null;
+        }
+        return session.user;
+      } catch (e) {
+        localStorage.removeItem('blockweb_session');
+        return null;
       }
     }
 
@@ -305,12 +321,12 @@
         return 'ما بسته‌های مختلف داریم: رایگان (۱ پروژه)، نقره‌ای (۳ پروژه)، طلایی (۱۰ پروژه). برای خرید به صفحه پلن‌ها برید.';
       }
       if (q.includes('دانلود') || q.includes('خروجی') || q.includes('کد')) {
-        return 'بعد از اتمام طراحی، از بخش Blockly می‌تونید کد HTML/CSS/JS سایت خودتون رو دانلود کنید.';
+        return 'بعد از اتمام طراحی، می‌تونید کد HTML/CSS/JS سایت خودتون رو دانلود کنید.';
       }
       if (q.includes('رنگ') || q.includes('فونت')) {
         return 'توی بخش تنظیمات ظاهری می‌تونید رنگ هدر، بادی، فوتر و ۳ رنگ اصلی رو انتخاب کنید. فونت‌های وزیر، یکان، ایران‌سنس و... در دسترس هستن.';
       }
-      return 'متشکرم از پیام شما. من دستیار WebCraft هستم و می‌تونم در زمینه ساخت سایت، تنظیمات، اشتراک و پرومیوم کمکت کنم.';
+      return 'متشکرم از پیام شما. من دستیار BlockWeb هستم و می‌تونم در زمینه ساخت سایت، تنظیمات، اشتراک و پرومیوم کمکت کنم.';
     }
 
     async function sendMessage() {
@@ -348,7 +364,13 @@
     }
 
     (function init() {
-      new WebCraftApp();
+      const user = checkSession();
+      if (!user) {
+        window.location.href = 'login.html';
+        return;
+      }
+      
+      new BlockWebApp();
       document.getElementById('chatInput').focus();
     })();
   </script>
