@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>WebCraft | ویرایش پروژه</title>
+  <title>BlockWeb | ویرایش پروژه</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <script src="https://developer.eitaa.com/eitaa-web-app.js"></script>
   <style>
@@ -196,7 +196,7 @@
   <header class="header">
     <div class="header-right">
       <div class="header-logo"><i class="fa-solid fa-cubes"></i></div>
-      <span class="header-title">WebCraft Builder</span>
+      <span class="header-title">BlockWeb Builder</span>
     </div>
     <div class="header-btns">
       <a href="../dashboard.html" class="header-btn"><i class="fa-solid fa-arrow-right"></i> خروج</a>
@@ -367,7 +367,7 @@
   </div>
 
   <script>
-    const API_URL = 'https://script.google.com/macros/s/AKfycbzhx-rXcEZb-Q0D7ekTcuGfH5OujNRPpb4LRcQ49U4q4jAPjQRI6JrNxcQDNPzwM4mG/exec';
+    const API_URL = 'https://script.google.com/macros/s/AKfycby1I5tG6oh2p5pPQQUqoLxVYTtdrOrTj_qzOf1L4gMcJO3n1BtK5szNJihmXmqJZQY/exec';
     const SESSION_DURATION = 3 * 60 * 60 * 1000;
 
     let currentStep = 0;
@@ -394,7 +394,7 @@
     let currentUser = null;
     let hasExistingSettings = false;
 
-    class WebCraftApp {
+    class BlockWebApp {
       constructor() {
         this.webApp = window.Eitaa && window.Eitaa.WebApp ? window.Eitaa.WebApp : null;
         if (this.webApp) { this.webApp.ready(); this.webApp.expand(); }
@@ -402,17 +402,17 @@
     }
 
     function checkSession() {
-      const sessionData = localStorage.getItem('webcraft_session');
+      const sessionData = localStorage.getItem('blockweb_session');
       if (!sessionData) return null;
       try {
         const session = JSON.parse(sessionData);
         if (Date.now() - session.timestamp > SESSION_DURATION) {
-          localStorage.removeItem('webcraft_session');
+          localStorage.removeItem('blockweb_session');
           return null;
         }
         return session.user;
       } catch (e) {
-        localStorage.removeItem('webcraft_session');
+        localStorage.removeItem('blockweb_session');
         return null;
       }
     }
@@ -649,7 +649,7 @@
         });
       } catch (e) {}
       
-      localStorage.setItem('wc_settings_' + (domainName || projectId), JSON.stringify(settings));
+      localStorage.setItem('bw_settings_' + (domainName || projectId), JSON.stringify(settings));
     }
 
     async function saveAndGoToBlockly() {
@@ -704,7 +704,7 @@
     }
 
     (async function init() {
-      new WebCraftApp();
+      new BlockWebApp();
       
       currentUser = checkSession();
       if (!currentUser) {
