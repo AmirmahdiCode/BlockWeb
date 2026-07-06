@@ -13,8 +13,7 @@
       --primary: #6366f1; --primary-dark: #4f46e5; --primary-light: #818cf8;
       --dark: #0f172a; --text: #334155; --text-light: #94a3b8;
       --white: #ffffff; --red: #f43f5e; --green: #10b981;
-      --purple: #a855f7; --orange: #f59e0b; --cyan: #06b6d4;
-      --radius: 14px; --shadow: 0 2px 12px rgba(0,0,0,0.04);
+      --purple: #a855f7; --orange: #f59e0b; --gold: #fbbf24;
     }
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -54,7 +53,53 @@
       color: #fff; font-size: 13px; font-weight: 700;
     }
     .btn-profile-name { font-size: 12px; font-weight: 600; color: var(--dark); }
+
     .main-container { flex: 1; max-width: 1100px; width: 100%; margin: 20px auto; padding: 0 12px; }
+
+    .premium-banner {
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+      border-radius: 16px; padding: 24px 28px; margin-bottom: 20px;
+      display: flex; align-items: center; gap: 20px;
+      border: 1px solid rgba(251,191,36,0.2);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+      cursor: pointer; transition: all 0.3s ease; text-decoration: none;
+      position: relative; overflow: hidden;
+    }
+    .premium-banner::before {
+      content: '';
+      position: absolute; top: -50%; right: -20%;
+      width: 300px; height: 300px;
+      background: radial-gradient(circle, rgba(251,191,36,0.08) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+    .premium-banner:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.25);
+    }
+    .premium-icon {
+      width: 64px; height: 64px; border-radius: 16px;
+      background: linear-gradient(135deg, rgba(251,191,36,0.2), rgba(251,191,36,0.05));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 28px; color: var(--gold); flex-shrink: 0;
+      border: 1px solid rgba(251,191,36,0.3);
+      position: relative; z-index: 1;
+    }
+    .premium-info { flex: 1; position: relative; z-index: 1; }
+    .premium-info h3 { font-size: 17px; font-weight: 700; color: #fff; margin-bottom: 4px; }
+    .premium-info p { font-size: 12px; color: rgba(255,255,255,0.6); margin-bottom: 10px; }
+    .premium-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+    .premium-tag {
+      font-size: 10px; padding: 4px 10px; border-radius: 8px;
+      background: rgba(251,191,36,0.1); color: var(--gold);
+      border: 1px solid rgba(251,191,36,0.2);
+      display: flex; align-items: center; gap: 4px;
+    }
+    .premium-tag i { font-size: 9px; }
+    .premium-arrow {
+      color: var(--gold); font-size: 24px; flex-shrink: 0;
+      position: relative; z-index: 1;
+    }
+
     .section-title {
       text-align: center; font-size: 18px; color: var(--dark);
       margin-bottom: 16px; position: relative; font-weight: 700;
@@ -69,12 +114,13 @@
     }
     .divider-line { flex: 1; height: 1px; background: var(--bg3); }
     .divider-text { font-size: 16px; font-weight: 700; color: var(--dark); white-space: nowrap; }
+
     .products-grid {
       display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;
     }
     .product-card {
-      background: var(--white); border-radius: var(--radius); overflow: hidden;
-      box-shadow: var(--shadow); transition: all 0.3s ease; cursor: pointer;
+      background: var(--white); border-radius: 14px; overflow: hidden;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.04); transition: all 0.3s ease; cursor: pointer;
       border: 1px solid var(--bg3);
     }
     .product-card:hover {
@@ -115,6 +161,7 @@
       text-align: center; padding: 32px 16px; color: var(--text-light); grid-column: 1/-1;
     }
     .empty-projects i { font-size: 36px; margin-bottom: 10px; display: block; color: var(--primary-light); }
+
     .footer {
       text-align: center; padding: 20px; background: var(--white);
       border-top: 1px solid var(--bg3); margin-top: auto;
@@ -128,6 +175,7 @@
     }
     .footer-links a:hover { color: var(--dark); }
     .footer-text { font-size: 10px; color: var(--text-light); }
+
     .floating-buttons {
       position: fixed; bottom: 20px; right: 20px;
       display: flex; flex-direction: column; gap: 10px; z-index: 999;
@@ -156,6 +204,9 @@
       .product-info { padding: 8px 10px; }
       .product-category { font-size: 8px; padding: 2px 6px; }
       .product-price { font-size: 11px; }
+      .premium-banner { padding: 20px; }
+      .premium-icon { width: 50px; height: 50px; font-size: 22px; }
+      .premium-info h3 { font-size: 15px; }
     }
     @media (max-width: 650px) {
       .products-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
@@ -169,6 +220,8 @@
       .product-likes-count { font-size: 10px; }
       .product-likes-count i { font-size: 10px; }
       .header-title { font-size: 17px; }
+      .premium-banner { flex-direction: column; text-align: center; }
+      .premium-arrow { display: none; }
     }
     @media (max-width: 380px) {
       .products-grid { gap: 8px; }
@@ -198,6 +251,23 @@
   </header>
 
   <section class="main-container">
+
+    <a href="plans.html" class="premium-banner">
+      <div class="premium-icon"><i class="fa-solid fa-crown"></i></div>
+      <div class="premium-info">
+        <h3>ارتقا به پرومیوم</h3>
+        <p>با خرید اشتراک پرومیوم، به تمام قابلیت‌های WebCraft دسترسی پیدا کنید</p>
+        <div class="premium-tags">
+          <span class="premium-tag"><i class="fa-solid fa-check"></i> پروژه نامحدود</span>
+          <span class="premium-tag"><i class="fa-solid fa-check"></i> رنگ‌های دلخواه</span>
+          <span class="premium-tag"><i class="fa-solid fa-check"></i> انیمیشن‌ها</span>
+          <span class="premium-tag"><i class="fa-solid fa-check"></i> پیش‌نمایش زنده</span>
+          <span class="premium-tag"><i class="fa-solid fa-check"></i> پشتیبانی اختصاصی</span>
+        </div>
+      </div>
+      <div class="premium-arrow"><i class="fa-solid fa-chevron-left"></i></div>
+    </a>
+
     <h2 class="section-title">داشبورد</h2>
     <div class="products-grid" id="mainGrid">
       <div class="empty-projects"><i class="fa-solid fa-circle-notch fa-spin"></i><p>در حال بارگذاری...</p></div>
@@ -232,7 +302,7 @@
   </div>
 
   <script>
-    const API_URL = 'https://script.google.com/macros/s/AKfycbwATHkWehDwSXpcb9Ufx4g31fc49pbz3pPTB-154c7BhnsNeNRwDid3Upv6RtjU7r5F/exec';
+    const API_URL = 'https://script.google.com/macros/s/AKfycbzhx-rXcEZb-Q0D7ekTcuGfH5OujNRPpb4LRcQ49U4q4jAPjQRI6JrNxcQDNPzwM4mG/exec';
     const SESSION_DURATION = 3 * 60 * 60 * 1000;
 
     class WebCraftApp {
