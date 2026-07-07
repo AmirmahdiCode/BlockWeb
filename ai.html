@@ -142,6 +142,15 @@
       to { transform: rotate(360deg); }
     }
 
+    .lock-badge {
+      display: inline-flex; align-items: center; gap: 4px;
+      font-size: 10px; color: var(--orange); background: #fef3c7;
+      padding: 3px 8px; border-radius: 8px;
+    }
+    .lock-badge.unlocked {
+      color: var(--green); background: #ecfdf5;
+    }
+
     .footer {
       text-align: center; padding: 20px; background: var(--white);
       border-top: 1px solid var(--bg3); margin-top: auto;
@@ -191,7 +200,7 @@
         <i class="fa-solid fa-lightbulb"></i> ایده پردازی
       </button>
       <button class="tab-btn locked" id="tabCode" onclick="switchTab('code')">
-        <i class="fa-solid fa-microchip"></i> کدنویسی
+        <i class="fa-solid fa-microchip"></i> کدنویسی <span class="lock-badge" id="lockCode"><i class="fa-solid fa-crown"></i> پرومیوم</span>
       </button>
     </div>
 
@@ -229,7 +238,7 @@
       <div class="ai-card">
         <div class="ai-card-header">
           <i class="fa-solid fa-microchip"></i>
-          <h3>کدنویسی</h3>
+          <h3>کدنویسی <span class="lock-badge" id="lockCodeHeader"><i class="fa-solid fa-crown"></i> پرومیوم</span></h3>
         </div>
         <div class="ai-card-body">
           <textarea id="codeInput" placeholder="توضیح دهید چه چیزی می‌خواهید بسازید تا کد آن را برایتان بنویسم..."></textarea>
@@ -298,14 +307,16 @@
       tabCode.classList.remove('locked');
       tabCode.style.opacity = '1';
       tabCode.style.cursor = 'pointer';
-      tabCode.title = '';
+      
+      const badges = document.querySelectorAll('#lockCode, #lockCodeHeader');
+      badges.forEach(badge => {
+        badge.classList.add('unlocked');
+        badge.innerHTML = '<i class="fa-solid fa-unlock"></i> فعال';
+      });
     }
 
     function switchTab(mode) {
-      if (mode === 'code' && !isPremiumUser) {
-        alert('بخش کدنویسی مخصوص کاربران پرومیوم است.');
-        return;
-      }
+      if (mode === 'code' && !isPremiumUser) return;
 
       currentMode = mode;
       
@@ -353,11 +364,7 @@
 
     async function processAI(mode) {
       if (isProcessing) return;
-
-      if (mode === 'code' && !isPremiumUser) {
-        alert('بخش کدنویسی مخصوص کاربران پرومیوم است.');
-        return;
-      }
+      if (mode === 'code' && !isPremiumUser) return;
       
       const inputId = mode + 'Input';
       const input = document.getElementById(inputId).value.trim();
