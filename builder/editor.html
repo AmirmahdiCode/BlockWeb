@@ -24,6 +24,7 @@
       background: var(--white); box-shadow: 0 1px 8px rgba(0,0,0,0.03);
       padding: 14px 20px; border-bottom: 1px solid var(--bg3);
       display: flex; align-items: center; justify-content: space-between;
+      position: sticky; top: 0; z-index: 100;
     }
     .header-right { display: flex; align-items: center; gap: 10px; }
     .header-logo {
@@ -60,43 +61,26 @@
       to { transform: rotate(360deg); }
     }
 
-    .main-container { flex: 1; display: flex; align-items: center; justify-content: center; padding: 20px; display: none; }
-    .main-container.loaded { display: flex; }
+    .main-container { flex: 1; max-width: 700px; width: 100%; margin: 24px auto; padding: 0 16px; display: none; }
+    .main-container.loaded { display: block; }
 
-    .wizard-card {
-      background: var(--white); border-radius: 20px;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.08); width: 100%;
-      max-width: 600px; overflow: hidden; border: 1px solid var(--bg3);
+    .section-card {
+      background: var(--white); border-radius: 16px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.04); overflow: hidden;
+      border: 1px solid var(--bg3); margin-bottom: 14px;
     }
-    .wizard-header {
-      padding: 24px; text-align: center;
-      background: linear-gradient(135deg, #eef2ff, #e0e7ff);
+    .section-header {
+      padding: 16px 20px; background: linear-gradient(135deg, #eef2ff, #e0e7ff);
+      display: flex; align-items: center; gap: 10px;
+      border-bottom: 1px solid var(--bg3);
     }
-    .wizard-header i { font-size: 36px; color: var(--primary); margin-bottom: 8px; }
-    .wizard-header h2 { font-size: 18px; font-weight: 700; color: var(--dark); }
-    .wizard-header p { font-size: 12px; color: var(--text-light); margin-top: 4px; }
-
-    .progress-bar {
-      display: flex; padding: 0 24px; gap: 4px; margin: 16px 0;
-    }
-    .progress-dot {
-      flex: 1; height: 4px; border-radius: 2px; background: var(--bg3);
-      transition: all 0.3s ease;
-    }
-    .progress-dot.done { background: var(--primary); }
-    .progress-dot.current { background: var(--primary-light); }
-
-    .wizard-body { padding: 20px 24px; min-height: 280px; }
-
-    .step { display: none; }
-    .step.active { display: block; }
-
-    .step h3 { font-size: 16px; color: var(--dark); margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
-    .step h3 i { color: var(--primary); }
+    .section-header i { font-size: 18px; color: var(--primary); }
+    .section-header h3 { font-size: 15px; color: var(--dark); font-weight: 700; }
+    .section-body { padding: 16px 20px; }
 
     .option-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
     .option-card {
-      padding: 16px; border-radius: 12px; border: 2px solid var(--bg3);
+      padding: 14px; border-radius: 12px; border: 2px solid var(--bg3);
       cursor: pointer; text-align: center; transition: all 0.3s ease;
       background: var(--white);
     }
@@ -104,13 +88,13 @@
     .option-card.selected { border-color: var(--primary); background: #eef2ff; }
     .option-card.locked { opacity: 0.6; cursor: not-allowed; }
     .option-card.locked:hover { border-color: var(--bg3); background: var(--white); }
-    .option-card i { font-size: 24px; color: var(--primary); margin-bottom: 8px; display: block; }
+    .option-card i { font-size: 22px; color: var(--primary); margin-bottom: 6px; display: block; }
     .option-card span { font-size: 13px; font-weight: 600; color: var(--dark); }
     .option-card small { font-size: 10px; color: var(--text-light); display: block; margin-top: 4px; }
 
     .option-row {
-      display: flex; align-items: center; gap: 12px; padding: 12px;
-      border-radius: 10px; border: 1.5px solid var(--bg3); margin-bottom: 8px;
+      display: flex; align-items: center; gap: 12px; padding: 10px;
+      border-radius: 10px; border: 1.5px solid var(--bg3); margin-bottom: 6px;
       cursor: pointer; transition: all 0.3s ease;
     }
     .option-row:hover { border-color: var(--primary-light); }
@@ -119,7 +103,7 @@
     .option-row.locked:hover { border-color: var(--bg3); background: var(--white); }
     .option-row input[type="checkbox"] { accent-color: var(--primary); }
 
-    .form-group { margin-bottom: 14px; }
+    .form-group { margin-bottom: 12px; }
     .form-group label { display: block; font-size: 12px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
     .form-group input, .form-group textarea {
       width: 100%; padding: 11px 14px; border: 1.5px solid var(--bg3); border-radius: 10px;
@@ -131,41 +115,28 @@
     }
 
     .color-picker-row { display: flex; gap: 10px; align-items: center; }
-    .color-picker-row input[type="color"] { width: 50px; height: 40px; border: none; cursor: pointer; border-radius: 8px; }
-
-    .sound-row { display: flex; gap: 10px; align-items: center; margin-bottom: 8px; }
-    .sound-row input { flex: 1; }
+    .color-picker-row input[type="color"] { width: 40px; height: 36px; border: none; cursor: pointer; border-radius: 8px; }
 
     .lock-badge {
-      display: inline-flex; align-items: center; gap: 4px;
-      font-size: 10px; color: var(--orange); background: #fef3c7;
-      padding: 3px 8px; border-radius: 8px; margin-right: 6px;
+      display: inline-flex; align-items: center; gap: 3px;
+      font-size: 9px; color: #065f46; background: #d1fae5;
+      padding: 2px 7px; border-radius: 6px;
     }
+    .lock-badge i { font-size: 8px; }
     .lock-badge.unlocked {
       color: var(--green); background: #ecfdf5;
     }
 
-    .wizard-footer {
-      padding: 16px 24px; border-top: 1px solid var(--bg3);
-      display: flex; justify-content: space-between; gap: 10px;
+    .btn-submit {
+      width: 100%; padding: 14px; margin-top: 8px;
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: #fff; border: none;
+      border-radius: 12px; font-size: 15px; font-weight: 600;
+      cursor: pointer; font-family: inherit;
+      transition: all 0.3s ease;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
     }
-    .btn-nav {
-      padding: 11px 24px; border-radius: 10px; font-size: 13px; font-weight: 600;
-      cursor: pointer; font-family: inherit; transition: all 0.3s ease;
-      display: flex; align-items: center; gap: 6px;
-    }
-    .btn-prev { background: var(--bg2); color: var(--text); border: 1px solid var(--bg3); }
-    .btn-prev:hover { background: var(--bg3); }
-    .btn-next { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: #fff; border: none; }
-    .btn-next:hover { box-shadow: 0 4px 16px rgba(99,102,241,0.3); }
-
-    .summary-list { list-style: none; padding: 0; }
-    .summary-list li {
-      padding: 10px 0; border-bottom: 1px solid var(--bg2);
-      font-size: 13px; display: flex; align-items: center; gap: 10px;
-    }
-    .summary-list li i { color: var(--primary); width: 20px; text-align: center; }
-    .summary-list li span { color: var(--text-light); margin-right: auto; font-size: 11px; }
+    .btn-submit:hover { box-shadow: 0 4px 16px rgba(99,102,241,0.3); }
 
     .existing-notice {
       background: #fef3c7; border: 1px solid #fcd34d; border-radius: 12px;
@@ -187,7 +158,6 @@
 
     @media (max-width: 500px) {
       .option-grid { grid-template-columns: 1fr; }
-      .wizard-body { padding: 16px; }
     }
   </style>
 </head>
@@ -206,173 +176,173 @@
   <div class="loading-container" id="loadingContainer">
     <div class="loading-spinner">
       <i class="fa-solid fa-circle-notch"></i>
-      <p>در حال بارگذاری اطلاعات...</p>
+      <p>در حال بارگذاری...</p>
     </div>
   </div>
 
   <div class="main-container" id="mainContainer">
-    <div class="wizard-card">
-      <div class="wizard-header">
-        <i class="fa-solid fa-wand-magic-sparkles"></i>
-        <h2 id="wizardTitle">ساخت سایت</h2>
-        <p id="wizardSubtitle">مرحله <span id="stepNumber">۱</span> از ۸</p>
-      </div>
-      <div class="progress-bar" id="progressBar"></div>
 
-      <div class="wizard-body">
-
-        <div class="step active" id="step0">
-          <h3><i class="fa-solid fa-triangle-exclamation"></i> تنظیمات قبلی</h3>
-          <div class="existing-notice">
-            <i class="fa-solid fa-clock-rotate-left"></i>
-            <p>این پروژه قبلاً تنظیمات داشته است. آیا می‌خواهید تنظیمات قبلی پاک شود و از نو شروع کنید یا با همان تنظیمات ادامه دهید؟</p>
-            <div class="existing-buttons">
-              <button class="btn-reset" onclick="resetSettings()">
-                <i class="fa-solid fa-trash"></i> پاک کردن و شروع از اول
-              </button>
-              <button class="btn-keep" onclick="keepSettings()">
-                <i class="fa-solid fa-check"></i> ادامه با تنظیمات قبلی
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <div class="step" id="step1">
-          <h3><i class="fa-solid fa-panel"></i> تنظیمات هدر</h3>
-          <p style="font-size:12px;color:var(--text-light);margin-bottom:16px;">آیا سایت شما نیاز به هدر دارد؟</p>
-          <div class="option-grid">
-            <div class="option-card selected" onclick="selectOption(this, 'header', 'yes')">
-              <i class="fa-solid fa-circle-check"></i><span>بله</span><small>با لوگو و منو</small>
-            </div>
-            <div class="option-card" onclick="selectOption(this, 'header', 'no')">
-              <i class="fa-solid fa-circle-xmark"></i><span>خیر</span><small>سایت ساده</small>
-            </div>
-          </div>
-        </div>
-
-        <div class="step" id="step2">
-          <h3><i class="fa-solid fa-align-left"></i> متن‌های سایت</h3>
-          <p style="font-size:12px;color:var(--text-light);margin-bottom:16px;">چینش متن (چند مورد)</p>
-          <div class="option-row" onclick="toggleCheck(this, 'textAlign', 'right')">
-            <input type="checkbox" id="chkRight" checked> <i class="fa-solid fa-align-right"></i> <span>راست‌چین</span>
-          </div>
-          <div class="option-row" onclick="toggleCheck(this, 'textAlign', 'center')">
-            <input type="checkbox" id="chkCenter"> <i class="fa-solid fa-align-center"></i> <span>وسط‌چین</span>
-          </div>
-          <div class="option-row" onclick="toggleCheck(this, 'textAlign', 'left')">
-            <input type="checkbox" id="chkLeft"> <i class="fa-solid fa-align-left"></i> <span>چپ‌چین</span>
-          </div>
-        </div>
-
-        <div class="step" id="step3">
-          <h3><i class="fa-solid fa-panel"></i> فوتر</h3>
-          <p style="font-size:12px;color:var(--text-light);margin-bottom:16px;">فوتر چند خطی باشد؟</p>
-          <div class="option-grid">
-            <div class="option-card" onclick="selectOption(this, 'footer', '1')">
-              <i class="fa-solid fa-minus"></i><span>تک خط</span><small>کپی‌رایت</small>
-            </div>
-            <div class="option-card selected" onclick="selectOption(this, 'footer', '2')">
-              <i class="fa-solid fa-equals"></i><span>دو خط</span><small>لینک + کپی‌رایت</small>
-            </div>
-            <div class="option-card" onclick="selectOption(this, 'footer', '3')">
-              <i class="fa-solid fa-bars"></i><span>سه خط</span><small>آمار + لینک + کپی‌رایت</small>
-            </div>
-          </div>
-        </div>
-
-        <div class="step" id="step4">
-          <h3><i class="fa-solid fa-chart-bar"></i> آمار <span class="lock-badge" id="lockStats"><i class="fa-solid fa-crown"></i> پرومیوم</span></h3>
-          <p style="font-size:12px;color:var(--text-light);margin-bottom:16px;">نمایش آمار بازدید در فوتر</p>
-          <div class="option-grid">
-            <div class="option-card selected" onclick="selectOption(this, 'stats', 'no')">
-              <i class="fa-solid fa-circle-xmark"></i><span>خیر</span>
-            </div>
-            <div class="option-card locked" id="cardStats" onclick="selectOption(this, 'stats', 'yes')">
-              <i class="fa-solid fa-circle-check"></i><span>بله</span><small>آمار بازدید</small>
-            </div>
-          </div>
-        </div>
-
-        <div class="step" id="step5">
-          <h3><i class="fa-solid fa-headset"></i> پشتیبانی <span class="lock-badge" id="lockSupport"><i class="fa-solid fa-crown"></i> پرومیوم</span></h3>
-          <p style="font-size:12px;color:var(--text-light);margin-bottom:16px;">چت آنلاین در سایت</p>
-          <div class="option-grid">
-            <div class="option-card selected" onclick="selectOption(this, 'support', 'no')">
-              <i class="fa-solid fa-circle-xmark"></i><span>خیر</span>
-            </div>
-            <div class="option-card locked" id="cardSupport" onclick="selectOption(this, 'support', 'yes')">
-              <i class="fa-solid fa-circle-check"></i><span>بله</span><small>چت آنلاین</small>
-            </div>
-          </div>
-          <div id="supportPromptArea" style="display:none;margin-top:12px;">
-            <div class="form-group">
-              <label>پرامپت پشتیبانی</label>
-              <textarea id="supportPrompt" rows="3" placeholder="توضیح نحوه پاسخگویی..."></textarea>
-            </div>
-          </div>
-        </div>
-
-        <div class="step" id="step6">
-          <h3><i class="fa-solid fa-layer-group"></i> نوع بادی</h3>
-          <p style="font-size:12px;color:var(--text-light);margin-bottom:16px;">چیدمان محتوا (چند مورد)</p>
-          <div class="option-row" onclick="toggleCheck(this, 'bodyType', 'list')">
-            <input type="checkbox" id="chkList"> <i class="fa-solid fa-list"></i> <span>لیستی</span>
-          </div>
-          <div class="option-row" onclick="toggleCheck(this, 'bodyType', 'button')">
-            <input type="checkbox" id="chkButton"> <i class="fa-solid fa-square"></i> <span>دکمه‌ای</span>
-          </div>
-          <div class="option-row locked" id="rowCustom" onclick="toggleCheck(this, 'bodyType', 'custom')">
-            <input type="checkbox" id="chkCustom" disabled> <i class="fa-solid fa-grid-2"></i> <span>مختصاتی</span>
-            <span class="lock-badge" id="lockCustom"><i class="fa-solid fa-crown"></i> پرومیوم</span>
-          </div>
-        </div>
-
-        <div class="step" id="step7">
-          <h3><i class="fa-solid fa-palette"></i> رنگ‌ها و صوت</h3>
-          <p style="font-size:12px;color:var(--text-light);margin-bottom:16px;">۳ رنگ + ۳ صوت</p>
-          <div class="form-group">
-            <label>رنگ اصلی</label>
-            <div class="color-picker-row"><input type="color" id="color1" value="#6366f1"></div>
-          </div>
-          <div class="form-group">
-            <label>رنگ پس‌زمینه</label>
-            <div class="color-picker-row"><input type="color" id="color2" value="#f8fafc"></div>
-          </div>
-          <div class="form-group">
-            <label>رنگ متن</label>
-            <div class="color-picker-row"><input type="color" id="color3" value="#0f172a"></div>
-          </div>
-          <div class="form-group"><label>صوت ۱</label><input type="text" id="sound1" placeholder="لینک صوت"></div>
-          <div class="form-group"><label>صوت ۲</label><input type="text" id="sound2" placeholder="لینک صوت"></div>
-          <div class="form-group"><label>صوت ۳</label><input type="text" id="sound3" placeholder="لینک صوت"></div>
-        </div>
-
-        <div class="step" id="step8">
-          <h3><i class="fa-solid fa-circle-check"></i> تأیید نهایی</h3>
-          <ul class="summary-list" id="summaryList"></ul>
-        </div>
-
-      </div>
-
-      <div class="wizard-footer" id="wizardFooter">
-        <button class="btn-nav btn-prev" id="btnPrev" onclick="prevStep()" style="visibility:hidden;">
-          <i class="fa-solid fa-arrow-right"></i> قبلی
+    <div id="existingNotice" class="existing-notice" style="display:none;">
+      <i class="fa-solid fa-clock-rotate-left"></i>
+      <p>این پروژه قبلاً تنظیمات داشته است. ادامه دهید یا از نو شروع کنید؟</p>
+      <div class="existing-buttons">
+        <button class="btn-reset" onclick="resetSettings()">
+          <i class="fa-solid fa-trash"></i> پاک کردن و شروع از اول
         </button>
-        <span id="spacer"></span>
-        <button class="btn-nav btn-next" id="btnNext" onclick="nextStep()">
-          بعدی <i class="fa-solid fa-arrow-left"></i>
+        <button class="btn-keep" onclick="keepSettings()">
+          <i class="fa-solid fa-check"></i> ادامه با تنظیمات قبلی
         </button>
       </div>
     </div>
+
+    <div class="section-card">
+      <div class="section-header">
+        <i class="fa-solid fa-panel"></i>
+        <h3>هدر</h3>
+      </div>
+      <div class="section-body">
+        <div class="option-grid">
+          <div class="option-card selected" id="cardHeaderYes" onclick="selectOption(this, 'header', 'yes')">
+            <i class="fa-solid fa-circle-check"></i><span>بله</span><small>با لوگو و منو</small>
+          </div>
+          <div class="option-card" id="cardHeaderNo" onclick="selectOption(this, 'header', 'no')">
+            <i class="fa-solid fa-circle-xmark"></i><span>خیر</span><small>سایت ساده</small>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-card">
+      <div class="section-header">
+        <i class="fa-solid fa-align-left"></i>
+        <h3>چینش متن</h3>
+      </div>
+      <div class="section-body">
+        <div class="option-row" onclick="toggleCheck(this, 'textAlign', 'right')">
+          <input type="checkbox" id="chkRight" checked> <i class="fa-solid fa-align-right"></i> <span>راست‌چین</span>
+        </div>
+        <div class="option-row" onclick="toggleCheck(this, 'textAlign', 'center')">
+          <input type="checkbox" id="chkCenter"> <i class="fa-solid fa-align-center"></i> <span>وسط‌چین</span>
+        </div>
+        <div class="option-row" onclick="toggleCheck(this, 'textAlign', 'left')">
+          <input type="checkbox" id="chkLeft"> <i class="fa-solid fa-align-left"></i> <span>چپ‌چین</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-card">
+      <div class="section-header">
+        <i class="fa-solid fa-panel"></i>
+        <h3>فوتر</h3>
+      </div>
+      <div class="section-body">
+        <div class="option-grid">
+          <div class="option-card" id="cardFooter1" onclick="selectOption(this, 'footer', '1')">
+            <i class="fa-solid fa-minus"></i><span>تک خط</span><small>کپی‌رایت</small>
+          </div>
+          <div class="option-card selected" id="cardFooter2" onclick="selectOption(this, 'footer', '2')">
+            <i class="fa-solid fa-equals"></i><span>دو خط</span><small>لینک + کپی‌رایت</small>
+          </div>
+          <div class="option-card" id="cardFooter3" onclick="selectOption(this, 'footer', '3')">
+            <i class="fa-solid fa-bars"></i><span>سه خط</span><small>آمار + لینک + کپی‌رایت</small>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-card">
+      <div class="section-header">
+        <i class="fa-solid fa-chart-bar"></i>
+        <h3>آمار <span class="lock-badge" id="lockStats"><i class="fa-solid fa-crown"></i> پرومیوم</span></h3>
+      </div>
+      <div class="section-body">
+        <div class="option-grid">
+          <div class="option-card selected" id="cardStatsNo" onclick="selectOption(this, 'stats', 'no')">
+            <i class="fa-solid fa-circle-xmark"></i><span>خیر</span>
+          </div>
+          <div class="option-card locked" id="cardStatsYes" onclick="selectOption(this, 'stats', 'yes')">
+            <i class="fa-solid fa-circle-check"></i><span>بله</span><small>آمار بازدید</small>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-card">
+      <div class="section-header">
+        <i class="fa-solid fa-headset"></i>
+        <h3>پشتیبانی <span class="lock-badge" id="lockSupport"><i class="fa-solid fa-crown"></i> پرومیوم</span></h3>
+      </div>
+      <div class="section-body">
+        <div class="option-grid">
+          <div class="option-card selected" id="cardSupportNo" onclick="selectOption(this, 'support', 'no')">
+            <i class="fa-solid fa-circle-xmark"></i><span>خیر</span>
+          </div>
+          <div class="option-card locked" id="cardSupportYes" onclick="selectOption(this, 'support', 'yes')">
+            <i class="fa-solid fa-circle-check"></i><span>بله</span><small>چت آنلاین</small>
+          </div>
+        </div>
+        <div id="supportPromptArea" style="display:none;margin-top:12px;">
+          <div class="form-group">
+            <label>پرامپت پشتیبانی</label>
+            <textarea id="supportPrompt" rows="3" placeholder="توضیح نحوه پاسخگویی..."></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-card">
+      <div class="section-header">
+        <i class="fa-solid fa-layer-group"></i>
+        <h3>نوع بادی</h3>
+      </div>
+      <div class="section-body">
+        <div class="option-row" onclick="toggleCheck(this, 'bodyType', 'list')">
+          <input type="checkbox" id="chkList"> <i class="fa-solid fa-list"></i> <span>لیستی</span>
+        </div>
+        <div class="option-row" onclick="toggleCheck(this, 'bodyType', 'button')">
+          <input type="checkbox" id="chkButton"> <i class="fa-solid fa-square"></i> <span>دکمه‌ای</span>
+        </div>
+        <div class="option-row locked" id="rowCustom" onclick="toggleCheck(this, 'bodyType', 'custom')">
+          <input type="checkbox" id="chkCustom" disabled> <i class="fa-solid fa-grid-2"></i> <span>مختصاتی</span>
+          <span class="lock-badge" id="lockCustom"><i class="fa-solid fa-crown"></i> پرومیوم</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-card">
+      <div class="section-header">
+        <i class="fa-solid fa-palette"></i>
+        <h3>رنگ‌ها و صوت</h3>
+      </div>
+      <div class="section-body">
+        <div class="form-group">
+          <label>رنگ اصلی</label>
+          <div class="color-picker-row"><input type="color" id="color1" value="#6366f1"></div>
+        </div>
+        <div class="form-group">
+          <label>رنگ پس‌زمینه</label>
+          <div class="color-picker-row"><input type="color" id="color2" value="#f8fafc"></div>
+        </div>
+        <div class="form-group">
+          <label>رنگ متن</label>
+          <div class="color-picker-row"><input type="color" id="color3" value="#0f172a"></div>
+        </div>
+        <div class="form-group"><label>صوت ۱</label><input type="text" id="sound1" placeholder="لینک صوت"></div>
+        <div class="form-group"><label>صوت ۲</label><input type="text" id="sound2" placeholder="لینک صوت"></div>
+        <div class="form-group"><label>صوت ۳</label><input type="text" id="sound3" placeholder="لینک صوت"></div>
+      </div>
+    </div>
+
+    <button class="btn-submit" onclick="saveAndContinue()">
+      <i class="fa-solid fa-check"></i> ذخیره و ادامه
+    </button>
+
   </div>
 
   <script>
     const API_URL = 'https://script.google.com/macros/s/AKfycby1I5tG6oh2p5pPQQUqoLxVYTtdrOrTj_qzOf1L4gMcJO3n1BtK5szNJihmXmqJZQY/exec';
     const SESSION_DURATION = 3 * 60 * 60 * 1000;
 
-    let currentStep = 0;
-    const totalSteps = 8;
-    
     let settings = {
       header: 'yes',
       textAlign: ['right'],
@@ -492,7 +462,6 @@
     }
 
     function collectSettings() {
-      if (currentStep === 0) return;
       settings.color1 = document.getElementById('color1')?.value || settings.color1;
       settings.color2 = document.getElementById('color2')?.value || settings.color2;
       settings.color3 = document.getElementById('color3')?.value || settings.color3;
@@ -522,7 +491,7 @@
       };
       
       hasExistingSettings = false;
-      currentStep = 1;
+      document.getElementById('existingNotice').style.display = 'none';
       
       document.getElementById('chkRight').checked = true;
       document.getElementById('chkCenter').checked = false;
@@ -537,12 +506,12 @@
       document.getElementById('sound2').value = '';
       document.getElementById('sound3').value = '';
       
-      document.getElementById('wizardFooter').style.display = 'flex';
-      updateStep();
+      updateAllCards();
     }
 
     function keepSettings() {
       hasExistingSettings = false;
+      document.getElementById('existingNotice').style.display = 'none';
       
       document.getElementById('color1').value = settings.color1;
       document.getElementById('color2').value = settings.color2;
@@ -556,81 +525,52 @@
       document.getElementById('chkList').checked = settings.bodyType.includes('list');
       document.getElementById('chkButton').checked = settings.bodyType.includes('button');
       
-      saveAndGoToBlockly();
+      updateAllCards();
     }
 
-    function updateSummary() {
-      const list = document.getElementById('summaryList');
-      collectSettings();
+    function updateAllCards() {
+      document.querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
+      document.querySelectorAll('.option-row').forEach(r => {
+        r.classList.remove('selected');
+        const cb = r.querySelector('input[type="checkbox"]');
+        if (cb && !r.classList.contains('locked')) cb.checked = false;
+      });
       
-      const labels = {
-        header: { yes: 'دارد', no: 'ندارد' },
-        footer: { '1': 'تک خط', '2': 'دو خط', '3': 'سه خط' },
-        stats: { yes: 'دارد', no: 'ندارد' },
-        support: { yes: 'دارد', no: 'ندارد' }
-      };
+      if (settings.header === 'yes') document.getElementById('cardHeaderYes')?.classList.add('selected');
+      else document.getElementById('cardHeaderNo')?.classList.add('selected');
       
-      const bodyTypeLabels = { list: 'لیستی', button: 'دکمه‌ای', custom: 'مختصاتی' };
+      document.getElementById('cardFooter' + settings.footer)?.classList.add('selected');
       
-      list.innerHTML = `
-        <li><i class="fa-solid fa-panel"></i> هدر <span>${labels.header[settings.header]}</span></li>
-        <li><i class="fa-solid fa-align-left"></i> چینش متن <span>${settings.textAlign.join('، ')}</span></li>
-        <li><i class="fa-solid fa-panel"></i> فوتر <span>${labels.footer[settings.footer]}</span></li>
-        <li><i class="fa-solid fa-chart-bar"></i> آمار <span>${labels.stats[settings.stats]}</span></li>
-        <li><i class="fa-solid fa-headset"></i> پشتیبانی <span>${labels.support[settings.support]}</span></li>
-        <li><i class="fa-solid fa-layer-group"></i> نوع بادی <span>${settings.bodyType.length > 0 ? settings.bodyType.map(b => bodyTypeLabels[b] || b).join('، ') : 'انتخاب نشده'}</span></li>
-        <li><i class="fa-solid fa-palette"></i> رنگ‌ها <span>${settings.color1}, ${settings.color2}, ${settings.color3}</span></li>
-        <li><i class="fa-solid fa-music"></i> صوت‌ها <span>${[settings.sound1, settings.sound2, settings.sound3].filter(s => s).length} عدد</span></li>
-      `;
-    }
-
-    function updateStep() {
-      document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
-      document.getElementById('step' + currentStep).classList.add('active');
-      document.getElementById('stepNumber').textContent = currentStep === 0 ? '...' : currentStep;
-      document.getElementById('wizardSubtitle').textContent = currentStep === 0 ? 'تنظیمات قبلی' : 'مرحله ' + currentStep + ' از ۸';
+      if (settings.stats === 'yes') document.getElementById('cardStatsYes')?.classList.add('selected');
+      else document.getElementById('cardStatsNo')?.classList.add('selected');
       
-      document.getElementById('btnPrev').style.visibility = (currentStep === 0 || currentStep === 1) ? 'hidden' : 'visible';
-      
-      const btnNext = document.getElementById('btnNext');
-      if (currentStep === totalSteps) {
-        btnNext.innerHTML = 'تأیید و ادامه <i class="fa-solid fa-check"></i>';
-        updateSummary();
+      if (settings.support === 'yes') {
+        document.getElementById('cardSupportYes')?.classList.add('selected');
+        document.getElementById('supportPromptArea').style.display = 'block';
       } else {
-        btnNext.innerHTML = 'بعدی <i class="fa-solid fa-arrow-left"></i>';
+        document.getElementById('cardSupportNo')?.classList.add('selected');
+        document.getElementById('supportPromptArea').style.display = 'none';
       }
       
-      updateProgressBar();
-    }
-
-    function updateProgressBar() {
-      const bar = document.getElementById('progressBar');
-      let dots = '';
-      for (let i = 1; i <= totalSteps; i++) {
-        let cls = '';
-        if (i < currentStep) cls = 'done';
-        else if (i === currentStep) cls = 'current';
-        dots += `<div class="progress-dot ${cls}"></div>`;
+      if (settings.textAlign.includes('right')) {
+        document.getElementById('chkRight').checked = true;
+        document.getElementById('chkRight').parentElement.classList.add('selected');
       }
-      bar.innerHTML = dots;
-    }
-
-    function nextStep() {
-      collectSettings();
-      
-      if (currentStep < totalSteps) {
-        currentStep++;
-        updateStep();
-      } else {
-        saveAndGoToBlockly();
+      if (settings.textAlign.includes('center')) {
+        document.getElementById('chkCenter').checked = true;
+        document.getElementById('chkCenter').parentElement.classList.add('selected');
       }
-    }
-
-    function prevStep() {
-      if (currentStep > 1) {
-        collectSettings();
-        currentStep--;
-        updateStep();
+      if (settings.textAlign.includes('left')) {
+        document.getElementById('chkLeft').checked = true;
+        document.getElementById('chkLeft').parentElement.classList.add('selected');
+      }
+      if (settings.bodyType.includes('list')) {
+        document.getElementById('chkList').checked = true;
+        document.getElementById('chkList').parentElement.classList.add('selected');
+      }
+      if (settings.bodyType.includes('button')) {
+        document.getElementById('chkButton').checked = true;
+        document.getElementById('chkButton').parentElement.classList.add('selected');
       }
     }
 
@@ -652,7 +592,7 @@
       localStorage.setItem('bw_settings_' + (domainName || projectId), JSON.stringify(settings));
     }
 
-    async function saveAndGoToBlockly() {
+    async function saveAndContinue() {
       collectSettings();
       await saveToServer();
       
@@ -724,26 +664,21 @@
       await loadSettingsFromServer();
       await checkUserPremium();
       
+      document.getElementById('color1').value = settings.color1;
+      document.getElementById('color2').value = settings.color2;
+      document.getElementById('color3').value = settings.color3;
+      document.getElementById('sound1').value = settings.sound1 || '';
+      document.getElementById('sound2').value = settings.sound2 || '';
+      document.getElementById('sound3').value = settings.sound3 || '';
+      
       if (hasExistingSettings) {
-        currentStep = 0;
-        document.getElementById('wizardFooter').style.display = 'none';
+        document.getElementById('existingNotice').style.display = 'block';
+        updateAllCards();
       } else {
-        currentStep = 1;
-        document.getElementById('color1').value = settings.color1;
-        document.getElementById('color2').value = settings.color2;
-        document.getElementById('color3').value = settings.color3;
-        document.getElementById('sound1').value = settings.sound1 || '';
-        document.getElementById('sound2').value = settings.sound2 || '';
-        document.getElementById('sound3').value = settings.sound3 || '';
-        document.getElementById('chkRight').checked = settings.textAlign.includes('right');
-        document.getElementById('chkCenter').checked = settings.textAlign.includes('center');
-        document.getElementById('chkLeft').checked = settings.textAlign.includes('left');
-        document.getElementById('chkList').checked = settings.bodyType.includes('list');
-        document.getElementById('chkButton').checked = settings.bodyType.includes('button');
+        updateAllCards();
       }
       
       showMainContent();
-      updateStep();
     })();
   </script>
 
