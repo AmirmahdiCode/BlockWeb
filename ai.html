@@ -65,9 +65,12 @@
       transition: all 0.3s ease;
       font-family: inherit;
       display: flex; align-items: center; justify-content: center; gap: 6px;
+      position: relative;
     }
     .tab-btn.active { color: #fff; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); }
-    .tab-btn:hover:not(.active) { color: var(--primary-dark); background: #eef2ff; }
+    .tab-btn:hover:not(.active):not(.locked) { color: var(--primary-dark); background: #eef2ff; }
+    .tab-btn.locked { opacity: 0.6; cursor: not-allowed; }
+    .tab-btn.locked:hover { color: var(--text-light); background: none; }
 
     .tab-content { display: none; }
     .tab-content.active { display: block; }
@@ -187,8 +190,8 @@
       <button class="tab-btn" onclick="switchTab('idea')">
         <i class="fa-solid fa-lightbulb"></i> ایده پردازی
       </button>
-      <button class="tab-btn" onclick="switchTab('code')">
-        <i class="fa-solid fa-code"></i> کدنویسی
+      <button class="tab-btn locked" id="tabCode" onclick="switchTab('code')">
+        <i class="fa-solid fa-microchip"></i> کدنویسی
       </button>
     </div>
 
@@ -225,7 +228,7 @@
     <div class="tab-content" id="tab-code">
       <div class="ai-card">
         <div class="ai-card-header">
-          <i class="fa-solid fa-code"></i>
+          <i class="fa-solid fa-microchip"></i>
           <h3>کدنویسی</h3>
         </div>
         <div class="ai-card-body">
@@ -265,6 +268,7 @@
 
     let currentMode = 'debug';
     let isProcessing = false;
+    let isPremiumUser = false;
 
     class BlockWebApp {
       constructor() {
@@ -289,7 +293,20 @@
       }
     }
 
+    function unlockCodeTab() {
+      const tabCode = document.getElementById('tabCode');
+      tabCode.classList.remove('locked');
+      tabCode.style.opacity = '1';
+      tabCode.style.cursor = 'pointer';
+      tabCode.title = '';
+    }
+
     function switchTab(mode) {
+      if (mode === 'code' && !isPremiumUser) {
+        alert('بخش کدنویسی مخصوص کاربران پرومیوم است.');
+        return;
+      }
+
       currentMode = mode;
       
       document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
@@ -336,6 +353,11 @@
 
     async function processAI(mode) {
       if (isProcessing) return;
+
+      if (mode === 'code' && !isPremiumUser) {
+        alert('بخش کدنویسی مخصوص کاربران پرومیوم است.');
+        return;
+      }
       
       const inputId = mode + 'Input';
       const input = document.getElementById(inputId).value.trim();
@@ -387,6 +409,13 @@
       }
       
       new BlockWebApp();
+
+      isPremiumUser = user.userType === 'owner' || user.userType === 'vip' || 
+                      (user.purchasedPlans && user.purchasedPlans.some(p => p !== 'plan_free'));
+
+      if (isPremiumUser) {
+        unlockCodeTab();
+      }
     })();
   </script>
 
