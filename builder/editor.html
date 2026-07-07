@@ -339,7 +339,7 @@
 
   </div>
 
-  <script>
+<script>
     const API_URL = 'https://script.google.com/macros/s/AKfycby1I5tG6oh2p5pPQQUqoLxVYTtdrOrTj_qzOf1L4gMcJO3n1BtK5szNJihmXmqJZQY/exec';
     const SESSION_DURATION = 3 * 60 * 60 * 1000;
 
@@ -491,13 +491,10 @@
       };
       
       hasExistingSettings = false;
-      document.getElementById('existingNotice').style.display = 'none';
       
-      document.getElementById('chkRight').checked = true;
-      document.getElementById('chkCenter').checked = false;
-      document.getElementById('chkLeft').checked = false;
-      document.getElementById('chkList').checked = false;
-      document.getElementById('chkButton').checked = false;
+      document.getElementById('existingNotice').style.display = 'none';
+      document.querySelectorAll('.section-card').forEach(c => c.style.display = '');
+      document.querySelector('.btn-submit').style.display = '';
       
       document.getElementById('color1').value = '#6366f1';
       document.getElementById('color2').value = '#f8fafc';
@@ -511,7 +508,10 @@
 
     function keepSettings() {
       hasExistingSettings = false;
+      
       document.getElementById('existingNotice').style.display = 'none';
+      document.querySelectorAll('.section-card').forEach(c => c.style.display = '');
+      document.querySelector('.btn-submit').style.display = '';
       
       document.getElementById('color1').value = settings.color1;
       document.getElementById('color2').value = settings.color2;
@@ -519,13 +519,10 @@
       document.getElementById('sound1').value = settings.sound1 || '';
       document.getElementById('sound2').value = settings.sound2 || '';
       document.getElementById('sound3').value = settings.sound3 || '';
-      document.getElementById('chkRight').checked = settings.textAlign.includes('right');
-      document.getElementById('chkCenter').checked = settings.textAlign.includes('center');
-      document.getElementById('chkLeft').checked = settings.textAlign.includes('left');
-      document.getElementById('chkList').checked = settings.bodyType.includes('list');
-      document.getElementById('chkButton').checked = settings.bodyType.includes('button');
       
       updateAllCards();
+      
+      saveAndGoToBlockly();
     }
 
     function updateAllCards() {
@@ -547,6 +544,7 @@
       if (settings.support === 'yes') {
         document.getElementById('cardSupportYes')?.classList.add('selected');
         document.getElementById('supportPromptArea').style.display = 'block';
+        document.getElementById('supportPrompt').value = settings.supportPrompt || '';
       } else {
         document.getElementById('cardSupportNo')?.classList.add('selected');
         document.getElementById('supportPromptArea').style.display = 'none';
@@ -593,6 +591,15 @@
     }
 
     async function saveAndContinue() {
+      collectSettings();
+      await saveToServer();
+      
+      if (domainName) {
+        window.location.href = 'blockly.html?domain=' + domainName;
+      }
+    }
+
+    async function saveAndGoToBlockly() {
       collectSettings();
       await saveToServer();
       
@@ -664,17 +671,18 @@
       await loadSettingsFromServer();
       await checkUserPremium();
       
-      document.getElementById('color1').value = settings.color1;
-      document.getElementById('color2').value = settings.color2;
-      document.getElementById('color3').value = settings.color3;
-      document.getElementById('sound1').value = settings.sound1 || '';
-      document.getElementById('sound2').value = settings.sound2 || '';
-      document.getElementById('sound3').value = settings.sound3 || '';
-      
       if (hasExistingSettings) {
         document.getElementById('existingNotice').style.display = 'block';
-        updateAllCards();
+        document.querySelectorAll('.section-card').forEach(c => c.style.display = 'none');
+        document.querySelector('.btn-submit').style.display = 'none';
       } else {
+        document.getElementById('existingNotice').style.display = 'none';
+        document.getElementById('color1').value = settings.color1;
+        document.getElementById('color2').value = settings.color2;
+        document.getElementById('color3').value = settings.color3;
+        document.getElementById('sound1').value = settings.sound1 || '';
+        document.getElementById('sound2').value = settings.sound2 || '';
+        document.getElementById('sound3').value = settings.sound3 || '';
         updateAllCards();
       }
       
