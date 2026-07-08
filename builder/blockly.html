@@ -21,7 +21,6 @@
       background: var(--bg); color: var(--text); min-height: 100vh;
       display: flex; flex-direction: column;
     }
-
     .header {
       background: var(--white); box-shadow: 0 1px 8px rgba(0,0,0,0.03);
       padding: 10px 16px; border-bottom: 1px solid var(--bg3);
@@ -50,8 +49,8 @@
     .btn-exit:hover { background: var(--bg2); }
 
     .tab-buttons {
-      display: flex; background: var(--white); border-radius: 10px;
-      border: 1px solid var(--bg3); overflow: hidden;
+      display: flex; justify-content: center; padding: 6px 0;
+      background: var(--white); border-bottom: 1px solid var(--bg3);
     }
     .tab-btn {
       padding: 8px 14px; font-size: 11px; font-weight: 600;
@@ -59,8 +58,8 @@
       cursor: pointer; font-family: inherit; transition: all 0.2s;
       display: flex; align-items: center; gap: 5px; white-space: nowrap;
     }
-    .tab-btn.active { background: var(--primary); color: #fff; }
-    .tab-btn:hover:not(.active) { color: var(--primary-dark); }
+    .tab-btn.active { background: var(--primary); color: #fff; border-radius: 8px; }
+    .tab-btn:hover:not(.active):not(.locked) { color: var(--primary-dark); }
     .tab-btn.locked { opacity: 0.5; cursor: not-allowed; }
 
     .main-container { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
@@ -99,7 +98,6 @@
       font-family: inherit; background: var(--green); color: #fff; border: none;
       display: flex; align-items: center; justify-content: center; gap: 4px;
     }
-    .btn-add-container:hover { background: #059669; }
 
     .canvas-area {
       flex: 1; overflow-y: auto; padding: 14px;
@@ -142,15 +140,13 @@
     }
     .badge-green { background: var(--green); }
     .badge-red { background: var(--red); cursor: pointer; }
-    .badge-red:hover { filter: brightness(1.1); }
     .badge-amber { background: var(--amber); }
 
     .btn-add-row {
       background: none; border: 1px dashed var(--green); color: var(--green);
       padding: 4px 8px; border-radius: 5px; font-size: 9px; cursor: pointer;
-      font-family: inherit; margin-right: auto;
+      font-family: inherit; margin-right: 4px;
     }
-    .btn-add-row:hover { background: #ecfdf5; }
 
     .tree-row {
       display: flex; align-items: center; padding: 5px 10px;
@@ -189,7 +185,6 @@
       padding: 8px 12px; background: var(--bg2); font-size: 10px; font-weight: 700;
       display: flex; align-items: center; gap: 6px; border-bottom: 1px solid var(--bg3);
     }
-    .code-panel-header i { font-size: 10px; }
     .code-panel-body {
       background: #1e293b; color: #e2e8f0; padding: 10px; font-family: 'Courier New', monospace;
       font-size: 10px; white-space: pre-wrap; max-height: 200px; overflow-y: auto;
@@ -238,15 +233,12 @@
       font-size: 10px; color: var(--dark); background: var(--bg);
       outline: none; font-family: inherit;
     }
-    .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
-      border-color: var(--primary);
-    }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--primary); }
     .btn-apply {
       width: 100%; padding: 9px; background: var(--primary); color: #fff;
       border: none; border-radius: 7px; font-size: 11px; font-weight: 600;
       cursor: pointer; font-family: inherit; margin-top: 4px;
     }
-    .btn-apply:hover { background: var(--primary-dark); }
     .lock-badge {
       display: inline-flex; align-items: center; gap: 2px;
       font-size: 8px; color: #065f46; background: #d1fae5;
@@ -269,11 +261,9 @@
       .page-tab { flex-shrink: 0; white-space: nowrap; font-size: 9px; padding: 5px 7px; }
       .canvas-area { padding: 8px; }
       .page-settings-bar { gap: 4px; }
-      .page-settings-bar label { font-size: 8px; }
       .container-header { flex-wrap: wrap; gap: 4px; }
       .tree-row { flex-wrap: wrap; gap: 3px; padding: 4px 8px; }
       .node-badge { font-size: 8px; padding: 5px 8px; }
-      .code-panels { padding: 6px; }
       .code-panel-body { font-size: 9px; max-height: 150px; }
     }
   </style>
@@ -291,6 +281,12 @@
       <a href="../dashboard.html" class="btn-h btn-exit"><i class="fa-solid fa-arrow-right"></i> خروج</a>
     </div>
   </header>
+
+  <div class="tab-buttons">
+    <button class="tab-btn active" onclick="switchTab('blocks')"><i class="fa-solid fa-cubes"></i> بلوک</button>
+    <button class="tab-btn" onclick="switchTab('code')"><i class="fa-solid fa-code"></i> کد</button>
+    <button class="tab-btn locked" onclick="switchTab('preview')"><i class="fa-solid fa-eye"></i> پیش‌نمایش <span class="lock-badge"><i class="fa-solid fa-crown"></i> پرومیوم</span></button>
+  </div>
 
   <div class="main-container">
     
@@ -356,7 +352,7 @@
     </div>
   </div>
 
-  <script>
+<script>
   const API_URL = 'https://script.google.com/macros/s/AKfycbxNtG79HTd2nfld3Hd1wdUyumvGqsQgE7nrog6F6xpdB7RkYx8Zl_tGlxvMMozaoQT3/exec';
   const SESSION_DURATION = 3 * 60 * 60 * 1000;
 
@@ -730,6 +726,9 @@
       });
 
       html += '</main>\n';
+
+      html += '<a href="https://eitaa.com/Amirmahdi_code" target="_blank" style="display:flex;align-items:center;gap:8px;padding:8px 16px;background:#fef2f2;border-top:1px dashed #f43f5e;text-decoration:none;color:#f43f5e;font-size:12px;justify-content:center;">';
+      html += '<img src="https://cdn.imgurl.ir/uploads/m87412_4b5310ee-fa5a-4d2e-a58c-a9337ddb4f92.png" style="width:32px;height:32px;border-radius:6px;"> حمایت از سازنده BlockWeb</a>\n';
 
       if (wizardSettings && wizardSettings.footer !== '1') {
         html += '<footer style="background:' + (ps.footerColor || '#1e293b') + ';padding:16px;color:#fff;text-align:center;margin-top:20px">\n';
